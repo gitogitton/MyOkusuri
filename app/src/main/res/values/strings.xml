@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">お薬(main)</string>
+    <string name="button_calender">カレンダーから編集</string>
+    <string name="kusuri_itiran">服用中薬一覧</string>
+
+    <string name="hello_calender_fragment">Hello Calender fragment</string>
+    <string name="hello_itiran_fragment">Hello Itiran fragment</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
