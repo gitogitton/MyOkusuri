@@ -15,16 +15,18 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
+        Log.d( CLASS_NAME, "onCreate() run. [arg="+savedInstanceState+"]" );
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //フラグメント
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //MenuFragment menuFragment = new MenuFragment();
-        //fragmentTransaction.add( R.id.container, calenderFragment );
-        fragmentTransaction.add( R.id.container, MenuFragment.newInstance( "", "" ) );
-        fragmentTransaction.commit();
+        if ( savedInstanceState==null ) {
+            //フラグメント
+            final FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            //MenuFragment menuFragment = new MenuFragment();
+            //fragmentTransaction.add( R.id.container, calenderFragment );
+            fragmentTransaction.add(R.id.container, MenuFragment.newInstance("", ""));
+            fragmentTransaction.commit();
+        }
     }
 
     @Override

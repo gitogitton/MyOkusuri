@@ -60,6 +60,7 @@ public class MenuFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d( CLASS_NAME, "onCreate() run." );
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -70,12 +71,14 @@ public class MenuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d( CLASS_NAME, "onCreateView() run." );
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_menu, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Log.d( CLASS_NAME, "onViewCreate() run." );
         Button buttonCalender = getActivity().findViewById( R.id.buttonToCalender );
         Button buttonOkusuriItiran = getActivity().findViewById( R.id.buttonToOkusuriItiran );
         //カレンダーボタンのリスナー
@@ -105,6 +108,7 @@ public class MenuFragment extends Fragment {
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
+        Log.d( CLASS_NAME, "onButtonPressed() run." );
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -112,6 +116,7 @@ public class MenuFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
+        Log.d( CLASS_NAME, "onAttach() run." );
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
@@ -123,6 +128,7 @@ public class MenuFragment extends Fragment {
 
     @Override
     public void onDetach() {
+        Log.d( CLASS_NAME, "onDetach() run." );
         super.onDetach();
         mListener = null;
     }
