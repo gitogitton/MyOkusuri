@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:divider="@drawable/divider"
+        android:dividerPadding="30sp"
         android:showDividers="end">
         <TextView
             android:layout_width="match_parent"
