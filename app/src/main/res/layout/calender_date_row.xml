@@ -13,7 +13,7 @@
         android:background="#f9deb3"
         android:textAlignment="center"
         android:textSize="20sp"
-        android:textColor="#000000"
+        android:textColor="#ff0000"
         android:text="1" />
 
     <TextView

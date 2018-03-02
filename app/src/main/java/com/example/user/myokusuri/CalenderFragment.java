@@ -13,7 +13,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TableRow;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -30,8 +33,6 @@ public class CalenderFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private Calendar mCalendar;
 
     public CalenderFragment() {
         // Required empty public constructor
@@ -84,18 +85,21 @@ public class CalenderFragment extends Fragment {
         actionBar.setTitle( R.string.title_calender ); //タイトル変更
         actionBar.setDisplayHomeAsUpEnabled( true ); //HOMEへ戻る「←」表示
 
-        //カレンダー設定
-        mCalendar = Calendar.getInstance(); //カレンダーのインスタンスを取得
-        int year = mCalendar.get( Calendar.YEAR );
-        int month = mCalendar.get( Calendar.MONTH )+1;
+        //現在年月を設定
+        Calendar calendar = Calendar.getInstance(); //カレンダーのインスタンスを取得
+        int currentYear = calendar.get( Calendar.YEAR );
+        int currentMonth = calendar.get( Calendar.MONTH )+1;
         TextView targetMonth = getActivity().findViewById( R.id.year_month );
-        targetMonth.setText( year+"年 "+month+"月" );
+        targetMonth.setText( currentYear+"年 "+currentMonth+"月" );
 
         // 日付行の追加
         ViewGroup viewGroup = getActivity().findViewById( R.id.calender_date );
         for ( int i=0; i<6; i++ ) {
             getActivity().getLayoutInflater().inflate( R.layout.calender_date_row, viewGroup );
         }
+
+        //カレンダー作成
+        setCalender( currentYear, currentMonth );
     }
 
     //オーバーフローメニュー設定
@@ -146,7 +150,67 @@ public class CalenderFragment extends Fragment {
         int year = calendar.get( Calendar.YEAR );
         int month = calendar.get( Calendar.MONTH ) + 1;
         int date = calendar.get( Calendar.DAY_OF_MONTH );
-
         return String.valueOf( year ) + "/" + String.valueOf( month ) + "/" + String.valueOf( date );
+    }
+
+    //月末日付を取得
+    private int getLastDateOfMonth( int year, int month ) {
+        Log.d( CLASS_NAME, "getMaximumDate() run. [year="+year+"/month="+month+"]" );
+        Calendar calendar = Calendar.getInstance();
+        calendar.set( Calendar.YEAR, year );
+        calendar.set( Calendar.MONTH, month-1 );
+        int maxDate = calendar.getActualMaximum( Calendar.DATE );
+        return maxDate;
+    }
+
+    //カレンダー作成（month は １～１２で指定）
+    private void setCalender( int year, int month ) {
+        Log.d( CLASS_NAME, "setCalender() run. [year="+year+"/month="+month+"]" );
+        //月の最大日付を取得
+        Calendar calendar = Calendar.getInstance();
+        calendar.set( Calendar.YEAR, year );
+        calendar.set( Calendar.MONTH, month-1 );
+        calendar.set( Calendar.DAY_OF_MONTH, 1 );
+        int lastDate = calendar.getActualMaximum( Calendar.DATE ); //該当月の最終日付
+        int dayOfTheWeek = calendar.get( Calendar.DAY_OF_WEEK ); //曜日：SUNDAY(1)、MONDAY(2)、TUESDAY(3)、WEDNESDAY(4)、THURSDAY(5)、FRIDAY(6)、SATURDAY(7)
+        Log.d( CLASS_NAME, "youbi="+String.valueOf( dayOfTheWeek )+" / lastDate="+String.valueOf( lastDate ) );
+        ViewGroup viewGroup = getActivity().findViewById( R.id.calender_date );
+        int tableRowCount=0;
+        int textViewCount=0;
+        tableRowCount = viewGroup.getChildCount();
+        Log.d( CLASS_NAME, "tableRowCount="+tableRowCount );
+
+//        if ( tableRowCount>0 ) {
+//            TableRow tableRow = (TableRow) viewGroup.getChildAt( 0 );
+//            textViewCount = tableRow.getChildCount();
+//            Log.d( CLASS_NAME, "textViewCount="+textViewCount );
+//            if ( textViewCount>0 ) {
+//                TextView textView = (TextView) tableRow.getChildAt(0 );
+//            }
+//        }
+
+        int date = 1;
+        for ( int i=0; i<tableRowCount; i++ ) {
+            TableRow tableRow = (TableRow)viewGroup.getChildAt( i );
+            if ( i<tableRowCount && date>lastDate ) { //日付行で表示する日付がない場合は非表示にする。
+                tableRow.setVisibility( View.INVISIBLE );
+            }
+            textViewCount = tableRow.getChildCount();
+            for ( int j=0; tableRow!=null && j<textViewCount; j++ ) {
+                TextView textView = (TextView)tableRow.getChildAt( j );
+                if ( i==0 && (j+1)<dayOfTheWeek ) { //月の最初の週、且つ、開始曜日でない場合はnullクリア。
+                    textView.setText( R.string.calender_date_none );
+                }
+                else {
+                    if ( date<=lastDate ) { //月の最大日付を越えない場合はテキストセット。越えればnullクリア。
+                        textView.setText( String.valueOf( date ) );
+                        date ++;
+                    }
+                    else {
+                        textView.setText( R.string.calender_date_none );
+                    }
+                }
+            }//for (j)
+        }//for (i)
     }
 }

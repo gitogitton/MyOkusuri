@@ -9,5 +9,6 @@
 
     <string name="hello_calender_fragment">Hello Calender fragment</string>
     <string name="hello_itiran_fragment">Hello Itiran fragment</string>
+    <string name="calender_date_none"></string>
 
 </resources>
