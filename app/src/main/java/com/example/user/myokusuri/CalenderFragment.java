@@ -93,7 +93,7 @@ public class CalenderFragment extends Fragment {
 
         // 日付行の追加
         ViewGroup viewGroup = getActivity().findViewById( R.id.calender_date );
-        for ( int i=0; i<5; i++ ) {
+        for ( int i=0; i<6; i++ ) {
             getActivity().getLayoutInflater().inflate( R.layout.calender_date_row, viewGroup );
         }
     }
