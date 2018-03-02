@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -33,6 +34,9 @@ public class CalenderFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private int mCurrentYear;
+    private int mCurrentMonth;
 
     public CalenderFragment() {
         // Required empty public constructor
@@ -79,7 +83,6 @@ public class CalenderFragment extends Fragment {
         Log.d( CLASS_NAME, "onViewCreated() run." );
         setHasOptionsMenu( true ); //オプションメニューを使用する事を宣言
         super.onViewCreated(view, savedInstanceState);
-
         //actionBar 設定
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setTitle( R.string.title_calender ); //タイトル変更
@@ -87,19 +90,54 @@ public class CalenderFragment extends Fragment {
 
         //現在年月を設定
         Calendar calendar = Calendar.getInstance(); //カレンダーのインスタンスを取得
-        int currentYear = calendar.get( Calendar.YEAR );
-        int currentMonth = calendar.get( Calendar.MONTH )+1;
+        mCurrentYear = calendar.get( Calendar.YEAR );
+        mCurrentMonth = calendar.get( Calendar.MONTH )+1;
         TextView targetMonth = getActivity().findViewById( R.id.year_month );
-        targetMonth.setText( currentYear+"年 "+currentMonth+"月" );
+        targetMonth.setText( mCurrentYear+"年 "+mCurrentMonth+"月" );
 
         // 日付行の追加
         ViewGroup viewGroup = getActivity().findViewById( R.id.calender_date );
         for ( int i=0; i<6; i++ ) {
             getActivity().getLayoutInflater().inflate( R.layout.calender_date_row, viewGroup );
         }
-
         //カレンダー作成
-        setCalender( currentYear, currentMonth );
+        setCalender( mCurrentYear, mCurrentMonth );
+
+        //前月、次月ボタンリスナー登録
+        Button buttonPrev = getActivity().findViewById( R.id.button_prev );
+        Button buttonNext = getActivity().findViewById( R.id.button_next );
+        buttonPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d( CLASS_NAME, "button prev. onClick()" );
+                //年月編集
+                mCurrentMonth--;
+                if ( mCurrentMonth<1  ) {
+                    mCurrentYear--;
+                    mCurrentMonth = 12;
+                }
+                //カレンダー作成
+                setCalender( mCurrentYear, mCurrentMonth );
+                TextView targetMonth = getActivity().findViewById( R.id.year_month );
+                targetMonth.setText( mCurrentYear+"年 "+mCurrentMonth+"月" );
+            }
+        });
+        buttonNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d( CLASS_NAME, "button next. onClick()" );
+                //年月編集
+                mCurrentMonth++;
+                if ( mCurrentMonth>12  ) {
+                    mCurrentYear++;
+                    mCurrentMonth = 1;
+                }
+                //カレンダー作成
+                setCalender( mCurrentYear, mCurrentMonth );
+                TextView targetMonth = getActivity().findViewById( R.id.year_month );
+                targetMonth.setText( mCurrentYear+"年 "+mCurrentMonth+"月" );
+            }
+        });
     }
 
     //オーバーフローメニュー設定
@@ -192,7 +230,7 @@ public class CalenderFragment extends Fragment {
         int date = 1;
         for ( int i=0; i<tableRowCount; i++ ) {
             TableRow tableRow = (TableRow)viewGroup.getChildAt( i );
-            if ( i<tableRowCount && date>lastDate ) { //日付行で表示する日付がない場合は非表示にする。
+            if ( i==tableRowCount && date>lastDate ) { //日付行で表示する日付がない場合は非表示にする。
                 tableRow.setVisibility( View.INVISIBLE );
             }
             textViewCount = tableRow.getChildCount();
