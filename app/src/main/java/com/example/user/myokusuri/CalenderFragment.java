@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -75,7 +76,25 @@ public class CalenderFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.d( CLASS_NAME, "onCreateView() run." );
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calender, container, false);
+        View view = inflater.inflate(R.layout.fragment_calender, container, false);
+        //Backキー対応
+        view.setFocusableInTouchMode( true ); //このViewがタッチモードでフォーカスを受け取る。
+        view.requestFocus(); //このViewにフォーカスを移す。
+        //Fragmentでのキー押下時のリスナー登録
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                Log.d( CLASS_NAME, "onKey() [i/keyEvent="+i+"/"+keyEvent+"]" );
+                if ( i == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_DOWN ) {
+                    Log.d( CLASS_NAME, "Back key" );
+                    ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+                    actionBar.setTitle( R.string.app_name ); //タイトル変更
+                    actionBar.setDisplayHomeAsUpEnabled( false ); //HOMEへ戻る「←」非表示
+                }
+                return false;
+            }
+        });
+        return view;
     }
 
     @Override
@@ -229,9 +248,11 @@ public class CalenderFragment extends Fragment {
 
         int date = 1;
         for ( int i=0; i<tableRowCount; i++ ) {
+            Log.d( CLASS_NAME, "i/date/lastDate="+i+"/"+date+"/"+lastDate );
             TableRow tableRow = (TableRow)viewGroup.getChildAt( i );
-            if ( i==tableRowCount && date>lastDate ) { //日付行で表示する日付がない場合は非表示にする。
-                tableRow.setVisibility( View.INVISIBLE );
+            if ( date>lastDate ) { //日付行で表示する日付がない場合は非表示にする。
+                Log.d( CLASS_NAME, "date>lastDate" );
+                tableRow.setVisibility( View.GONE );
             }
             textViewCount = tableRow.getChildCount();
             for ( int j=0; tableRow!=null && j<textViewCount; j++ ) {
@@ -242,10 +263,12 @@ public class CalenderFragment extends Fragment {
                 else {
                     if ( date<=lastDate ) { //月の最大日付を越えない場合はテキストセット。越えればnullクリア。
                         textView.setText( String.valueOf( date ) );
+                        Log.d( CLASS_NAME, "date="+date );
                         date ++;
                     }
                     else {
                         textView.setText( R.string.calender_date_none );
+                        Log.d( CLASS_NAME, "date is none" );
                     }
                 }
             }//for (j)
