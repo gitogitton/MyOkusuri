@@ -10,5 +10,6 @@
     <string name="hello_calender_fragment">Hello Calender fragment</string>
     <string name="hello_itiran_fragment">Hello Itiran fragment</string>
     <string name="calender_date_none"></string>
-
+    <string name="button_prev">前月</string>
+    <string name="button_next">次月</string>
 </resources>
