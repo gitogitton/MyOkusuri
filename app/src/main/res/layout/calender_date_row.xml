@@ -7,6 +7,7 @@
     android:layout_marginBottom="10dp" >
 
     <TextView
+        android:id="@+id/date_sun"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -17,6 +18,7 @@
         android:text="1" />
 
     <TextView
+        android:id="@+id/date_mon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -27,6 +29,7 @@
         android:text="2" />
 
     <TextView
+        android:id="@+id/date_tue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -37,6 +40,7 @@
         android:text="3" />
 
     <TextView
+        android:id="@+id/date_wed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -47,6 +51,7 @@
         android:text="4" />
 
     <TextView
+        android:id="@+id/date_thu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -57,6 +62,7 @@
         android:text="5" />
 
     <TextView
+        android:id="@+id/date_fri"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -67,6 +73,7 @@
         android:text="6" />
 
     <TextView
+        android:id="@+id/date_sut"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

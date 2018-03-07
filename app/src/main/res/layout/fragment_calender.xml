@@ -108,10 +108,9 @@
     </TableRow>
 
     <TableLayout
-        android:id="@+id/calender_date"
+        android:id="@+id/calender_date_part"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
-
     </TableLayout>
 
 </TableLayout>

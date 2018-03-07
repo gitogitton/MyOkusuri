@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -38,6 +39,10 @@ public class CalenderFragment extends Fragment {
 
     private int mCurrentYear;
     private int mCurrentMonth;
+
+    enum DayOfTheWeek {
+        SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
+    };
 
     public CalenderFragment() {
         // Required empty public constructor
@@ -106,22 +111,27 @@ public class CalenderFragment extends Fragment {
         ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
         actionBar.setTitle( R.string.title_calender ); //タイトル変更
         actionBar.setDisplayHomeAsUpEnabled( true ); //HOMEへ戻る「←」表示
-
         //現在年月を設定
         Calendar calendar = Calendar.getInstance(); //カレンダーのインスタンスを取得
         mCurrentYear = calendar.get( Calendar.YEAR );
         mCurrentMonth = calendar.get( Calendar.MONTH )+1;
         TextView targetMonth = getActivity().findViewById( R.id.year_month );
         targetMonth.setText( mCurrentYear+"年 "+mCurrentMonth+"月" );
-
         // 日付行の追加
-        ViewGroup viewGroup = getActivity().findViewById( R.id.calender_date );
+        ViewGroup viewGroup = getActivity().findViewById( R.id.calender_date_part );
         for ( int i=0; i<6; i++ ) {
-            getActivity().getLayoutInflater().inflate( R.layout.calender_date_row, viewGroup );
+            View dateRowText = getActivity().getLayoutInflater().inflate( R.layout.calender_date_row, viewGroup );
+            Log.d( CLASS_NAME, "dateRowText="+dateRowText );
         }
         //カレンダー作成
         setCalender( mCurrentYear, mCurrentMonth );
+        //リスナー登録
+        setOnListener();
+    }
 
+    //リスナー登録
+    private void setOnListener() {
+        Log.d( CLASS_NAME, "setOnListener() run." );
         //前月、次月ボタンリスナー登録
         Button buttonPrev = getActivity().findViewById( R.id.button_prev );
         Button buttonNext = getActivity().findViewById( R.id.button_next );
@@ -129,34 +139,65 @@ public class CalenderFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "button prev. onClick()" );
-                //年月編集
-                mCurrentMonth--;
-                if ( mCurrentMonth<1  ) {
-                    mCurrentYear--;
-                    mCurrentMonth = 12;
-                }
-                //カレンダー作成
-                setCalender( mCurrentYear, mCurrentMonth );
-                TextView targetMonth = getActivity().findViewById( R.id.year_month );
-                targetMonth.setText( mCurrentYear+"年 "+mCurrentMonth+"月" );
+                setPrevMonth();
             }
         });
         buttonNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "button next. onClick()" );
-                //年月編集
-                mCurrentMonth++;
-                if ( mCurrentMonth>12  ) {
-                    mCurrentYear++;
-                    mCurrentMonth = 1;
-                }
-                //カレンダー作成
-                setCalender( mCurrentYear, mCurrentMonth );
-                TextView targetMonth = getActivity().findViewById( R.id.year_month );
-                targetMonth.setText( mCurrentYear+"年 "+mCurrentMonth+"月" );
+                setNextMonth();
             }
         });
+        //カレンダー日付部
+        ViewGroup viewGroup = getActivity().findViewById( R.id.calender_date_part );
+        for ( int i=0; i<viewGroup.getChildCount(); i++ ) {
+            TableRow tableRow = (TableRow)viewGroup.getChildAt( i );
+            for ( int j=0; j<tableRow.getChildCount(); j++ ) {
+                TextView textView = (TextView)tableRow.getChildAt( j );
+                textView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d( CLASS_NAME, "date is clicked. "+((TextView)view).getText() );
+                        editMemo( (TextView)view );
+                    }
+                });
+            } //for (j)
+        } //for (i)
+    }
+
+    //該当日付の記録を開き、編集可とする。
+    private void editMemo( TextView textView ) {
+        Log.d( CLASS_NAME, "editMemo() run." );
+        Log.d( CLASS_NAME, "selected date : "+mCurrentYear+"/"+mCurrentMonth+"/"+textView.getText() );
+    }
+
+    //前月カレンダー表示
+    private void setPrevMonth() {
+        //年月編集
+        mCurrentMonth--;
+        if ( mCurrentMonth<1  ) {
+            mCurrentYear--;
+            mCurrentMonth = 12;
+        }
+        //カレンダー作成
+        setCalender( mCurrentYear, mCurrentMonth );
+        TextView targetMonth = getActivity().findViewById( R.id.year_month );
+        targetMonth.setText( mCurrentYear+"年 "+mCurrentMonth+"月" );
+    }
+
+    //次月カレンダー表示
+    private void setNextMonth() {
+        //年月編集
+        mCurrentMonth++;
+        if ( mCurrentMonth>12  ) {
+            mCurrentYear++;
+            mCurrentMonth = 1;
+        }
+        //カレンダー作成
+        setCalender( mCurrentYear, mCurrentMonth );
+        TextView targetMonth = getActivity().findViewById( R.id.year_month );
+        targetMonth.setText( mCurrentYear+"年 "+mCurrentMonth+"月" );
     }
 
     //オーバーフローメニュー設定
@@ -223,7 +264,7 @@ public class CalenderFragment extends Fragment {
     //カレンダー作成（month は １～１２で指定）
     private void setCalender( int year, int month ) {
         Log.d( CLASS_NAME, "setCalender() run. [year="+year+"/month="+month+"]" );
-        //月の最大日付を取得
+        //月の最大日付と1日の曜日を取得
         Calendar calendar = Calendar.getInstance();
         calendar.set( Calendar.YEAR, year );
         calendar.set( Calendar.MONTH, month-1 );
@@ -231,7 +272,7 @@ public class CalenderFragment extends Fragment {
         int lastDate = calendar.getActualMaximum( Calendar.DATE ); //該当月の最終日付
         int dayOfTheWeek = calendar.get( Calendar.DAY_OF_WEEK ); //曜日：SUNDAY(1)、MONDAY(2)、TUESDAY(3)、WEDNESDAY(4)、THURSDAY(5)、FRIDAY(6)、SATURDAY(7)
         Log.d( CLASS_NAME, "youbi="+String.valueOf( dayOfTheWeek )+" / lastDate="+String.valueOf( lastDate ) );
-        ViewGroup viewGroup = getActivity().findViewById( R.id.calender_date );
+        ViewGroup viewGroup = getActivity().findViewById( R.id.calender_date_part );
         int tableRowCount=0;
         int textViewCount=0;
         tableRowCount = viewGroup.getChildCount();
@@ -250,10 +291,7 @@ public class CalenderFragment extends Fragment {
         for ( int i=0; i<tableRowCount; i++ ) {
             Log.d( CLASS_NAME, "i/date/lastDate="+i+"/"+date+"/"+lastDate );
             TableRow tableRow = (TableRow)viewGroup.getChildAt( i );
-            if ( date>lastDate ) { //日付行で表示する日付がない場合は非表示にする。
-                Log.d( CLASS_NAME, "date>lastDate" );
-                tableRow.setVisibility( View.GONE );
-            }
+            tableRow.setVisibility( View.VISIBLE );
             textViewCount = tableRow.getChildCount();
             for ( int j=0; tableRow!=null && j<textViewCount; j++ ) {
                 TextView textView = (TextView)tableRow.getChildAt( j );
@@ -267,8 +305,15 @@ public class CalenderFragment extends Fragment {
                         date ++;
                     }
                     else {
-                        textView.setText( R.string.calender_date_none );
-                        Log.d( CLASS_NAME, "date is none" );
+                        if ( j==0 && date>lastDate ) { //最初の曜日である場合、日付カウントが月の日付の最大値を越えていれば行を非表示にして処理を終了する。
+                            tableRow.setVisibility( View.GONE );
+                            Log.d( CLASS_NAME, "date>lastDate" );
+                            break;
+                        }
+                        else {
+                            textView.setText(R.string.calender_date_none);
+                            Log.d(CLASS_NAME, "date is none");
+                        }
                     }
                 }
             }//for (j)
