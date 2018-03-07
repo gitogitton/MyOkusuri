@@ -1,9 +1,9 @@
-<TableLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.user.myokusuri.CalenderFragment">
+    tools:context="com.example.user.myokusuri.CalenderFragment"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- 年月ラベル (divider属性（区切り線）を使ってみた。LinearLayoutで囲まれているView毎に区切り線が入る。) -->
     <LinearLayout
