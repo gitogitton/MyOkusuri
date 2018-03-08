@@ -72,7 +72,7 @@ public class MenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d( CLASS_NAME, "onCreateView() run." );
-        // Inflate the layout for this fragment
+        // Inflate the shohousen for this fragment
         return inflater.inflate(R.layout.fragment_menu, container, false);
     }
 

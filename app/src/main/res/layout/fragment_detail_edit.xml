@@ -1,0 +1,49 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.user.myokusuri.DetailEditFragment">
+
+    <TextView
+        android:id="@+id/input_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00ffff"
+        android:text="@string/item_date"
+        android:textAlignment="center"
+        android:textSize="50sp"
+        />
+    <Button
+        android:id="@+id/shohousen_copy_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/input_date"
+        android:text="@string/button_shohou_copy"
+        />
+    <Button
+        android:id="@+id/shohousen_del_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/shohousen_copy_button"
+        android:text="@string/button_shohou_del"
+        />
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="300sp"
+        android:layout_below="@id/shohousen_del_button"
+        android:layout_marginTop="20sp"
+        android:fadeScrollbars="false"
+        >
+        <LinearLayout
+            android:id="@+id/shohousen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#00ff7f"
+            >
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,15 +1,26 @@
 <resources>
+    <!--画面名称-->
     <string name="app_name">お薬(main)</string>
+    <string name="title_calender">カレンダーから編集</string>
+    <string name="title_edit">詳細編集</string>
+    <!--メイン画面-->
     <string name="button_calender">カレンダーから編集</string>
     <string name="kusuri_itiran">服用中薬一覧</string>
-
-    <string name="title_calender">カレンダーから編集</string>
-
+    <!--カレンダー画面-->
     <string name="menu_calender_01">メニュー１</string>
-
     <string name="hello_calender_fragment">Hello Calender fragment</string>
     <string name="hello_itiran_fragment">Hello Itiran fragment</string>
     <string name="calender_date_none"></string>
     <string name="button_prev">前月</string>
     <string name="button_next">次月</string>
+    <!--詳細編集画面-->
+    <string name="menu_shohousen_01">処方箋コピー</string>
+    <string name="button_shohou_copy">処方箋をコピー</string>
+    <string name="button_shohou_del">処方箋を削除</string>
+    <string name="button_kusuri_tuika">薬を追加</string>
+    <string name="button_kusuri_sakujo">選択している薬を削除</string>
+    <string name="item_date">日付</string>
+    <string name="item_name_yakkyokumei">薬局名：</string>
+    <string name="item_name_kusurimei">薬名：</string>
+    <string name="item_name_nissu">処方日数：</string>
 </resources>

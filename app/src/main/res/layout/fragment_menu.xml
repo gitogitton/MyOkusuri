@@ -8,20 +8,17 @@
 
     <Button
         android:id="@+id/buttonToCalender"
-        android:layout_width="224dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="144dp"
         android:text="@string/button_calender"
-        android:layout_marginLeft="44dp" />
-
+        android:textSize="30sp"
+        />
     <Button
         android:id="@+id/buttonToOkusuriItiran"
-        android:layout_width="226dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="44dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="44dp"
-        android:text="@string/kusuri_itiran" />
+        android:text="@string/kusuri_itiran"
+        android:textSize="30sp"
+        />
 
 </LinearLayout>

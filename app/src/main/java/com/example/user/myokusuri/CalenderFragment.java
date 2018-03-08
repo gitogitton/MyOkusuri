@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -15,16 +16,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class CalenderFragment extends Fragment {
     private final String CLASS_NAME=getClass().getSimpleName();
@@ -80,7 +75,7 @@ public class CalenderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d( CLASS_NAME, "onCreateView() run." );
-        // Inflate the layout for this fragment
+        // Inflate the shohousen for this fragment
         View view = inflater.inflate(R.layout.fragment_calender, container, false);
         //Backキー対応
         view.setFocusableInTouchMode( true ); //このViewがタッチモードでフォーカスを受け取る。
@@ -126,11 +121,11 @@ public class CalenderFragment extends Fragment {
         //カレンダー作成
         setCalender( mCurrentYear, mCurrentMonth );
         //リスナー登録
-        setOnListener();
+        setListener();
     }
 
     //リスナー登録
-    private void setOnListener() {
+    private void setListener() {
         Log.d( CLASS_NAME, "setOnListener() run." );
         //前月、次月ボタンリスナー登録
         Button buttonPrev = getActivity().findViewById( R.id.button_prev );
@@ -170,6 +165,11 @@ public class CalenderFragment extends Fragment {
     private void editMemo( TextView textView ) {
         Log.d( CLASS_NAME, "editMemo() run." );
         Log.d( CLASS_NAME, "selected date : "+mCurrentYear+"/"+mCurrentMonth+"/"+textView.getText() );
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        String inputDate = String.valueOf( mCurrentYear )+"/"+String.valueOf( mCurrentMonth )+"/"+textView.getText();
+        fragmentTransaction.replace( R.id.container, DetailEditFragment.newInstance( inputDate, "" ) );
+        fragmentTransaction.addToBackStack( null );
+        fragmentTransaction.commit();
     }
 
     //前月カレンダー表示
