@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shohousen_header"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <TableRow
+        android:id="@+id/row_yakkyoku"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/item_yakkyoku"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/item_name_yakkyokumei"
+            android:textSize="20sp" />
+        <EditText
+            android:id="@+id/edit_yakkyoku"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="10"
+            android:hint="薬局名を入力"
+            android:inputType="text"
+            />
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/row_nissu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/item_nissu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/item_name_nissu"
+            android:textSize="20sp"
+            />
+        <EditText
+            android:id="@+id/edit_nissu"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_weight="10"
+            android:hint="何日分？"
+            android:inputType="number"
+            />
+    </TableRow>
+
+</TableLayout>
