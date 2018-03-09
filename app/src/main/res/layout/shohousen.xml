@@ -4,10 +4,10 @@
     android:id="@+id/shohousen_header"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#e0ffff"
     >
 
     <TableRow
-        android:id="@+id/row_yakkyoku"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
@@ -31,7 +31,6 @@
     </TableRow>
 
     <TableRow
-        android:id="@+id/row_nissu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
@@ -53,5 +52,21 @@
             android:inputType="number"
             />
     </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="10sp"
+        >
+        <Button
+            android:id="@+id/kusuri_tuika_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button_kusuri_tuika"
+            />
+    </TableRow>
+
+    <include android:id="@+id/kusuri" layout="@layout/shohousen_kusuri"/>
 
 </TableLayout>

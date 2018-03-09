@@ -1,24 +1,28 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.example.user.myokusuri.MenuFragment">
 
     <Button
         android:id="@+id/buttonToCalender"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="100sp"
+        android:height="100sp"
         android:text="@string/button_calender"
         android:textSize="30sp"
         />
+
     <Button
         android:id="@+id/buttonToOkusuriItiran"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/buttonToCalender"
+        android:layout_marginTop="50sp"
         android:text="@string/kusuri_itiran"
         android:textSize="30sp"
         />
 
-</LinearLayout>
+</RelativeLayout>

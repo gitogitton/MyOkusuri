@@ -1,6 +1,7 @@
 package com.example.user.myokusuri;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,7 +16,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 
@@ -29,10 +36,11 @@ public class DetailEditFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
     private String mParam1;
     private String mParam2;
-
+    //処方箋のバックグランドカラー（処方箋ごとにトグルする）
+    private final int mBackgroundColor_1 = Color.parseColor( "#e0ffff" );
+    private final int mBackgroundColor_2 = Color.parseColor( "#faf0e6" );
 
     public DetailEditFragment() {
         // Required empty public constructor
@@ -97,14 +105,14 @@ public class DetailEditFragment extends Fragment {
         actionBar.setTitle( R.string.title_edit ); //タイトル
         actionBar.setHomeButtonEnabled( true ); //HOMEへ戻る「←」セット
         //日付設定
-        TextView textView = getActivity().findViewById( R.id.input_date );
+        TextView textView = getActivity().findViewById( R.id.select_date );
         textView.setText( mParam1 );
+
         //指定された日付の処方情報を読み込んで動的に追加
         //指定された日に処方情報があれば初期表示し、無ければ１つだけ表示する。
-        ViewGroup viewGroup = getActivity().findViewById( R.id.shohousen ); //処方箋
-        getActivity().getLayoutInflater().inflate( R.layout.shohousen, viewGroup );
-        ViewGroup viewGroup1 = getActivity().findViewById( R.id.shohousen_header ); //薬(処方箋に含まれる！)
-        getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, viewGroup1 );
+//        ViewGroup viewGroup = getActivity().findViewById( R.id.shohousen ); //処方箋
+        LinearLayout linearLayout = getActivity().findViewById( R.id.shohousen ); //処方箋
+        getActivity().getLayoutInflater().inflate( R.layout.shohousen, linearLayout );
 
         //リスナー登録
         setListener();
@@ -114,21 +122,65 @@ public class DetailEditFragment extends Fragment {
         Button shohousenButton = getActivity().findViewById( R.id.shohousen_copy_button );
         Button shohousenDelButton = getActivity().findViewById( R.id.shohousen_del_button );
         Button kusuriTuikaButton = getActivity().findViewById( R.id.kusuri_tuika_button );
-        Button kusuriSakujoButton = getActivity().findViewById( R.id.kusuri_sakujo_button );
+        ImageView kusuriDel = getActivity().findViewById( R.id.imageView );
         shohousenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "処方箋 追加ボタン 押下" );
-                ViewGroup viewGroup = getActivity().findViewById( R.id.shohousen ); //処方箋
-                getActivity().getLayoutInflater().inflate( R.layout.shohousen, viewGroup );
-                ViewGroup viewGroup1 = getActivity().findViewById( R.id.shohousen_header ); //薬(処方箋に含まれる！)
-                getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, viewGroup1 );
+                LinearLayout linearLayout = getActivity().findViewById( R.id.shohousen ); //処方箋
+                View shohousen = getActivity().getLayoutInflater().inflate( R.layout.shohousen, linearLayout );
+                int shohousenCount = ((LinearLayout)shohousen).getChildCount();
+                Log.d( CLASS_NAME, "shohousenCount="+shohousenCount );
+                if ( shohousenCount<=0 ) { return; }
+                int colorCode = ( (shohousenCount%2==0)?mBackgroundColor_2:mBackgroundColor_1 );
+                TableLayout tableLayout = (TableLayout)((LinearLayout)shohousen).getChildAt( shohousenCount-1 );
+                tableLayout.setBackgroundColor( colorCode ); //shohousen.xml
+                TableRow tableRow = tableLayout.findViewById( R.id.kusuri );
+                ImageView imageView = tableRow.findViewById( R.id.imageView );
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Log.d( CLASS_NAME, "imageView is clicked." );
+                        TableRow vp = (TableRow)view.getParent();
+                        EditText editText = vp.findViewById( R.id.edit_kusuri );
+                        editText.setText( "" );
+                    }
+                });
+
             }
         });
         shohousenDelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "処方箋 削除ボタン 押下" );
+
+                View focusView = getActivity().getCurrentFocus();
+                Log.d( CLASS_NAME, "focus -> "+focusView );
+
+                ViewParent vp = focusView.getParent();
+                while( vp!=null ) {
+                    ViewParent viewParent = vp.getParent();
+                    Log.d( CLASS_NAME, "parent view -> "+viewParent );
+                    if ( viewParent instanceof TableLayout ) {
+                        Log.d( CLASS_NAME, "find tableLayout !!" );
+                    }
+                    vp = viewParent;
+
+//                    ViewGroup rootView = (ViewGroup)view.getRootView();
+//                    Log.d( CLASS_NAME, "root view = "+rootView );
+//                    ViewGroup viewGroup = (ViewGroup)rootView.getChildAt( 0 );
+//                    Log.d( CLASS_NAME, "child view 1 of root view = "+viewGroup );
+                }
+
+//                ViewParent viewParent1 = viewParent.getParent();
+//                Log.d( CLASS_NAME, "parent view 1 -> "+viewParent1 );
+//
+//                ViewParent viewParent2 = viewParent1.getParent();
+//                Log.d( CLASS_NAME, "parent view 2 -> "+viewParent2 );
+//
+//                ViewParent viewParent3 = viewParent2.getParent();
+//                Log.d( CLASS_NAME, "parent view 3 -> "+viewParent3 );
+
             }
         });
         kusuriTuikaButton.setOnClickListener(new View.OnClickListener() {
@@ -136,15 +188,27 @@ public class DetailEditFragment extends Fragment {
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "薬 追加ボタン 押下" );
 
-                //選択中の処方箋は取得
+                //選択中の処方箋viewを取得
+//                ボタンの親Viewをとる！！！（？）
 
                 //薬の入力域を追加
             }
         });
-        kusuriSakujoButton.setOnClickListener(new View.OnClickListener() {
+        kusuriDel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d( CLASS_NAME, "薬 削除ボタン 押下" );
+                Log.d( CLASS_NAME, "kusuriDel listenner run."+view );
+
+                ViewParent vp = view.getParent();
+                TableRow tableRow = (TableRow)vp;
+                Log.d( CLASS_NAME, ""+tableRow.getId() ); //id=kusuri
+                if ( vp instanceof ViewGroup ) {
+                    Log.d( CLASS_NAME, "ViewParent instanceof ViewGroup" );
+                }
+
+                vp = vp.getParent();
+                Log.d( CLASS_NAME, ""+vp ); //id=shohousen_header
+
             }
         });
     }

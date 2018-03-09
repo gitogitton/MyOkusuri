@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context="com.example.user.myokusuri.DetailEditFragment">
 
     <TextView
-        android:id="@+id/input_date"
+        android:id="@+id/select_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#00ffff"
@@ -14,25 +15,38 @@
         android:textAlignment="center"
         android:textSize="50sp"
         />
+    <TextView
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="処方箋の "
+        android:textSize="20sp"
+        android:layout_below="@id/select_date"
+        android:layout_marginTop="13sp"
+        />
     <Button
         android:id="@+id/shohousen_copy_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/input_date"
+        android:layout_below="@id/select_date"
+        android:layout_toRightOf="@id/label"
+        android:layout_toEndOf="@id/label"
         android:text="@string/button_shohou_copy"
         />
     <Button
         android:id="@+id/shohousen_del_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/shohousen_copy_button"
+        android:layout_below="@id/select_date"
+        android:layout_toRightOf="@id/shohousen_copy_button"
+        android:layout_toEndOf="@id/shohousen_copy_button"
         android:text="@string/button_shohou_del"
         />
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="300sp"
-        android:layout_below="@id/shohousen_del_button"
+        android:layout_below="@id/shohousen_copy_button"
         android:layout_marginTop="20sp"
         android:fadeScrollbars="false"
         >
@@ -41,7 +55,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="#00ff7f"
             >
         </LinearLayout>
     </ScrollView>
