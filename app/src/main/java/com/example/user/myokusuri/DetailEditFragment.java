@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +22,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 
 /**
@@ -38,9 +42,15 @@ public class DetailEditFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private String mParam1;
     private String mParam2;
+
     //処方箋のバックグランドカラー（処方箋ごとにトグルする）
     private final int mBackgroundColor_1 = Color.parseColor( "#e0ffff" );
     private final int mBackgroundColor_2 = Color.parseColor( "#faf0e6" );
+
+    private ArrayList<ShohousenData> mShohousenList = new ArrayList<>();  //処方箋リスト
+
+    private View mView;
+    private String mDate;
 
     public DetailEditFragment() {
         // Required empty public constructor
@@ -92,7 +102,11 @@ public class DetailEditFragment extends Fragment {
                 return false;
             }
         });
-        return view;
+
+        mView = view;
+        mDate = mParam1;
+
+        return mView;
     }
 
     @Override
@@ -106,47 +120,35 @@ public class DetailEditFragment extends Fragment {
         actionBar.setHomeButtonEnabled( true ); //HOMEへ戻る「←」セット
         //日付設定
         TextView textView = getActivity().findViewById( R.id.select_date );
-        textView.setText( mParam1 );
-
-        //指定された日付の処方情報を読み込んで動的に追加
-        //指定された日に処方情報があれば初期表示し、無ければ１つだけ表示する。
-//        ViewGroup viewGroup = getActivity().findViewById( R.id.shohousen ); //処方箋
-        LinearLayout linearLayout = getActivity().findViewById( R.id.shohousen ); //処方箋
-        getActivity().getLayoutInflater().inflate( R.layout.shohousen, linearLayout );
-
+        textView.setText( mDate );
+        //処方箋域を初期表示
+        addShohou( mDate );
         //リスナー登録
         setListener();
     }
 
     private void setListener() {
+        //処方箋［追加］［削除］［登録］ボタン取得
         Button shohousenButton = getActivity().findViewById( R.id.shohousen_copy_button );
         Button shohousenDelButton = getActivity().findViewById( R.id.shohousen_del_button );
+        Button shohousenSaveButton = getActivity().findViewById( R.id.shohousen_save_button );
+        //薬［追加］ボタン取得
         Button kusuriTuikaButton = getActivity().findViewById( R.id.kusuri_tuika_button );
+        //薬［削除］用「×」マークのView取得
         ImageView kusuriDel = getActivity().findViewById( R.id.imageView );
+
+        shohousenSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d( CLASS_NAME, "処方箋 保存ボタン 押下" );
+                saveShohou( view );
+            }
+        });
         shohousenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "処方箋 追加ボタン 押下" );
-                LinearLayout linearLayout = getActivity().findViewById( R.id.shohousen ); //処方箋
-                View shohousen = getActivity().getLayoutInflater().inflate( R.layout.shohousen, linearLayout );
-                int shohousenCount = ((LinearLayout)shohousen).getChildCount();
-                Log.d( CLASS_NAME, "shohousenCount="+shohousenCount );
-                if ( shohousenCount<=0 ) { return; }
-                int colorCode = ( (shohousenCount%2==0)?mBackgroundColor_2:mBackgroundColor_1 );
-                TableLayout tableLayout = (TableLayout)((LinearLayout)shohousen).getChildAt( shohousenCount-1 );
-                tableLayout.setBackgroundColor( colorCode ); //shohousen.xml
-                TableRow tableRow = tableLayout.findViewById( R.id.kusuri );
-                ImageView imageView = tableRow.findViewById( R.id.imageView );
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d( CLASS_NAME, "imageView is clicked." );
-                        TableRow vp = (TableRow)view.getParent();
-                        EditText editText = vp.findViewById( R.id.edit_kusuri );
-                        editText.setText( "" );
-                    }
-                });
-
+                addShohou( mDate );
             }
         });
         shohousenDelButton.setOnClickListener(new View.OnClickListener() {
@@ -165,22 +167,7 @@ public class DetailEditFragment extends Fragment {
                         Log.d( CLASS_NAME, "find tableLayout !!" );
                     }
                     vp = viewParent;
-
-//                    ViewGroup rootView = (ViewGroup)view.getRootView();
-//                    Log.d( CLASS_NAME, "root view = "+rootView );
-//                    ViewGroup viewGroup = (ViewGroup)rootView.getChildAt( 0 );
-//                    Log.d( CLASS_NAME, "child view 1 of root view = "+viewGroup );
                 }
-
-//                ViewParent viewParent1 = viewParent.getParent();
-//                Log.d( CLASS_NAME, "parent view 1 -> "+viewParent1 );
-//
-//                ViewParent viewParent2 = viewParent1.getParent();
-//                Log.d( CLASS_NAME, "parent view 2 -> "+viewParent2 );
-//
-//                ViewParent viewParent3 = viewParent2.getParent();
-//                Log.d( CLASS_NAME, "parent view 3 -> "+viewParent3 );
-
             }
         });
         kusuriTuikaButton.setOnClickListener(new View.OnClickListener() {
@@ -194,23 +181,80 @@ public class DetailEditFragment extends Fragment {
                 //薬の入力域を追加
             }
         });
-        kusuriDel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d( CLASS_NAME, "kusuriDel listenner run."+view );
+//        kusuriDel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d( CLASS_NAME, "kusuriDel listenner run."+view );
+//
+//                ViewParent vp = view.getParent();
+//                TableRow tableRow = (TableRow)vp;
+//                Log.d( CLASS_NAME, ""+tableRow.getId() ); //id=kusuri
+//                if ( vp instanceof ViewGroup ) {
+//                    Log.d( CLASS_NAME, "ViewParent instanceof ViewGroup" );
+//                }
+//
+//                vp = vp.getParent();
+//                Log.d( CLASS_NAME, ""+vp ); //id=shohousen_header
+//
+//            }
+//        });
+    }
 
-                ViewParent vp = view.getParent();
-                TableRow tableRow = (TableRow)vp;
-                Log.d( CLASS_NAME, ""+tableRow.getId() ); //id=kusuri
-                if ( vp instanceof ViewGroup ) {
-                    Log.d( CLASS_NAME, "ViewParent instanceof ViewGroup" );
-                }
+    private void saveShohou( View view ) {
 
-                vp = vp.getParent();
-                Log.d( CLASS_NAME, ""+vp ); //id=shohousen_header
+        Log.d( CLASS_NAME, "saveShohou() start. [view="+view+"]" );
 
-            }
-        });
+        ScrollView scrollView = (ScrollView) mView.findViewById( R.id.scroll_shohousen );
+        Log.d( CLASS_NAME, "scrollView = "+scrollView );
+
+        Log.d( CLASS_NAME, "scrollView.getChildCount()="+scrollView.getChildCount() );
+
+        LinearLayout linearLayout = (LinearLayout)scrollView.getChildAt( 0 ); //id=shohousen
+
+        Log.d( CLASS_NAME, "linearLayout.getChildCount()="+linearLayout.getChildCount() );
+
+        TableLayout tableLayout = (TableLayout)linearLayout.getChildAt( 0 ); //id=shohousen_header (薬局名など)
+
+        TableLayout tableLayout1 = linearLayout.findViewById( R.id.shohousen );
+
+        Log.d( CLASS_NAME, "linearLayout = "+linearLayout );
+        Log.d( CLASS_NAME, "tableLayout = "+tableLayout );
+        Log.d( CLASS_NAME, "tableLayout1 = "+tableLayout1 );
+
+    }
+
+    private void addShohou( String date ) {
+
+        Log.d( CLASS_NAME, "addShohou() start." );
+
+        int id = View.generateViewId();
+
+        ShohousenData shohousenData = new ShohousenData();
+        shohousenData.setViewId( id );
+        shohousenData.setShohouDate( mDate );
+        mShohousenList.add( shohousenData );
+
+        //処方箋Viewを動的作成し、IDをセットする。
+        ScrollView scrollView = (ScrollView) mView.findViewById( R.id.scroll_shohousen ); //処方箋 scrollview
+        TableLayout shohousenArea = (TableLayout) scrollView.getChildAt( 0 ); //処方箋 TableLayout
+        View inflateView = getActivity().getLayoutInflater().inflate( R.layout.shohousen, shohousenArea ); //linearLayout に layout.shohousen を入れる。
+        inflateView.setId( id );
+
+        TableLayout tableLayout = (TableLayout) ( (TableLayout)inflateView).getChildAt( mShohousenList.size()-1 );
+        TableRow tableRow = (TableRow) tableLayout.getChildAt( 0 );
+        TextView textView = (TextView)tableRow.findViewById( R.id.viewID );
+        textView.setText( String.valueOf( id ) );
+
+        //処方箋View取得、バックカラーをトグルしてセット
+        int shohousenCount = mShohousenList.size();
+        Log.d( CLASS_NAME, "shohousenCount="+shohousenCount );
+        if ( shohousenCount<=0 ) { return; }
+        int colorCode = ( (shohousenCount%2==0)?mBackgroundColor_2:mBackgroundColor_1 );
+        TableLayout shohousen = (TableLayout) ( (TableLayout)inflateView ).getChildAt( shohousenCount-1 );
+        shohousen.setBackgroundColor( colorCode );
+
+        //薬入力域 追加
+        getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, tableLayout );
     }
 
     @Override
@@ -246,4 +290,35 @@ public class DetailEditFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public void onStart() {
+        Log.d( CLASS_NAME, "DetailFragment.onStart() start." );
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d( CLASS_NAME, "DetailFragment.onResume() start." );
+        super.onResume();
+    }
+
+    @Override
+    public void onDetach() {
+        Log.d( CLASS_NAME, "DetailFragment.onDetach() start." );
+        super.onDetach();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d( CLASS_NAME, "DetailFragment.onStop() start." );
+        super.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        Log.d( CLASS_NAME, "DetailFragment.onPause() start." );
+        super.onPause();
+    }
+
 }

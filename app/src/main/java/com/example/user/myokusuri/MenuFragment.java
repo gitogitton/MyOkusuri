@@ -128,9 +128,20 @@ public class MenuFragment extends Fragment {
 
     @Override
     public void onDetach() {
-        Log.d( CLASS_NAME, "onDetach() run." );
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onStart() {
+        Log.d( CLASS_NAME, "MenuFragment.onStart() start." );
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d( CLASS_NAME, "MenuFragment.onResume() start." );
+        super.onResume();
     }
 
     /**

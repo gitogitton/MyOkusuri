@@ -29,7 +29,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/select_date"
-        android:layout_toRightOf="@id/label"
         android:layout_toEndOf="@id/label"
         android:text="@string/button_shohou_copy"
         />
@@ -38,25 +37,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/select_date"
-        android:layout_toRightOf="@id/shohousen_copy_button"
         android:layout_toEndOf="@id/shohousen_copy_button"
         android:text="@string/button_shohou_del"
         />
+    <Button
+        android:id="@+id/shohousen_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/select_date"
+        android:layout_toEndOf="@id/shohousen_del_button"
+        android:text="@string/button_shohou_save"
+        />
     <ScrollView
-        android:id="@+id/scrollView"
+        android:id="@+id/scroll_shohousen"
         android:layout_width="match_parent"
-        android:layout_height="300sp"
+        android:layout_height="400sp"
         android:layout_below="@id/shohousen_copy_button"
         android:layout_marginTop="20sp"
         android:fadeScrollbars="false"
         >
-        <LinearLayout
-            android:id="@+id/shohousen"
+        <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            >
-        </LinearLayout>
+            />
     </ScrollView>
 
 </RelativeLayout>

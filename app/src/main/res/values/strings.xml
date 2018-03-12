@@ -17,6 +17,7 @@
     <string name="menu_shohousen_01">処方箋コピー</string>
     <string name="button_shohou_copy">［追加］</string>
     <string name="button_shohou_del">［削除］</string>
+    <string name="button_shohou_save">［登録］</string>
     <string name="button_kusuri_tuika">薬［追加］</string>
     <string name="button_kusuri_sakujo">薬［削除］</string>
     <string name="item_date">日付</string>

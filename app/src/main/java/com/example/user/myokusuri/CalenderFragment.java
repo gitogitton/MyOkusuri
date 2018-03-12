@@ -319,4 +319,17 @@ public class CalenderFragment extends Fragment {
             }//for (j)
         }//for (i)
     }
+
+    @Override
+    public void onStart() {
+        Log.d( CLASS_NAME, "CalenderFragment.onStart() start." );
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Log.d( CLASS_NAME, "CalenderFragment.onResume() start." );
+        super.onResume();
+    }
+
 }

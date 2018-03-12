@@ -33,4 +33,16 @@ public class MainActivity extends AppCompatActivity implements MenuFragment.OnFr
     public void onFragmentInteraction(Uri uri) {
         Log.d( CLASS_NAME, "interface onFragmentInteraction run." );
     }
+
+    @Override
+    protected void onStart() {
+        Log.d( CLASS_NAME, "Activity.onStart() start." );
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d( CLASS_NAME, "Activity.onResume() start." );
+        super.onResume();
+    }
 }
