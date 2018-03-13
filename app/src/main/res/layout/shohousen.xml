@@ -26,7 +26,7 @@
     <EditText
         android:id="@+id/edit_yakkyoku"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_toEndOf="@id/item_yakkyoku"
         android:layout_alignBaseline="@id/item_yakkyoku"
         android:hint="@string/hint_name_yakkyoku"
@@ -46,7 +46,7 @@
     <EditText
         android:id="@+id/edit_nissu"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_below="@id/item_yakkyoku"
         android:layout_toEndOf="@id/item_nissu"
         android:hint="@string/hint_nissu_nyuryoku"

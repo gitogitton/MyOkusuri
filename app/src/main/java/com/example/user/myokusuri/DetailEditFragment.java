@@ -16,8 +16,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -188,11 +190,6 @@ public class DetailEditFragment extends Fragment {
         }
     }
 
-    private int getKusuriCount() {
-        Log.d( CLASS_NAME, "getKusuriCount() start." );
-        return 0;
-    }
-
     private void addShohou( String date ) {
 
         Log.d( CLASS_NAME, "addShohou() start." );
@@ -222,8 +219,9 @@ public class DetailEditFragment extends Fragment {
         mShohousenLayout.setBackgroundColor( colorCode );
 
         //薬入力域 追加
-        LinearLayout kusuriArea = (LinearLayout) mShohousenLayout.findViewById( R.id.kusuri_area ); //kusuri_area
-        View kusuri = getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, kusuriArea );
+//        LinearLayout kusuriArea = (LinearLayout) mShohousenLayout.findViewById( R.id.kusuri_area ); //kusuri_area
+//        View kusuri = getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, kusuriArea );
+        addKusuri();
 
         //［薬を追加］ボタンのリスナーを登録する。
         setListenerOfKusuriBtn();
@@ -236,17 +234,62 @@ public class DetailEditFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "buttonKusuriTuika listener start." );
-                //薬入力域 追加
-                LinearLayout kusuriArea = (LinearLayout) mShohousenLayout.findViewById( R.id.kusuri_area ); //kusuri_area
-                View kusuri = getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, kusuriArea );
-                Log.d( CLASS_NAME, "kusuri Total Count = "+kusuriArea.getChildCount() );
+                addKusuri();
             }
         });
     }
 
+    private void addKusuri() {
+        Log.d( CLASS_NAME, "addKusuri() start." );
+        //薬入力域 追加
+        LinearLayout kusuriArea = (LinearLayout) mShohousenLayout.findViewById( R.id.kusuri_area ); //kusuri_area
+        int nextRow = kusuriArea.getChildCount();
+        LinearLayout kusuri = (LinearLayout)getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, kusuriArea );
+        Log.d( CLASS_NAME, "kusuri Total Count = "+kusuriArea.getChildCount() );
+        //[×]ボタンのリスナー登録
+//        TableRow kusuriRow = (TableRow) kusuri.findViewById( R.id.row_kusuri ); //IDがみんな同じだから先頭しか取れない！！！
+        TableRow kusuriRow = (TableRow) kusuri.getChildAt( nextRow );
+        ImageView imageView = kusuriRow.findViewById( R.id.imageView );
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d( CLASS_NAME, "× push." );
+                clearKusuriMei( view );
+            }
+        });
+    }
+
+    private void clearKusuriMei( View view ) {
+        Log.d( CLASS_NAME, "clearKusuriMei() start." );
+        ViewParent viewParent = view.getParent();
+        EditText editText = ( (ViewGroup)viewParent ).findViewById( R.id.edit_kusuri );
+        editText.setText( "" );
+        return;
+    }
+
+    private void delKusuri() {
+        Log.d( CLASS_NAME, "delKusuri() start." );
+        View hasFocusView = getActivity().getCurrentFocus();
+        if ( hasFocusView instanceof EditText ) {
+            Log.d( CLASS_NAME, "instanceof EditText" );
+            if ( ( (EditText)hasFocusView).getId()==R.id.edit_kusuri ) {
+                Log.d( CLASS_NAME, "フォーカスのある薬" );
+                ViewParent removeRow = hasFocusView.getParent(); //row_kusuri
+                ViewParent parent = removeRow.getParent(); //kusuri_area
+                ( (ViewGroup)parent ).removeView( (View)removeRow );
+            }
+            else {
+                Log.d(CLASS_NAME, "薬名入力域にカーソルを移動していません。");
+            }
+        }
+        else {
+            Log.d( CLASS_NAME, "削除したい薬名入力域にカーソルを移動して下さい。" );
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.d( CLASS_NAME, "onCreateOptionsMenu() run. ["+menu+"]" );
+        Log.d( CLASS_NAME, "onCreateOptionsMenu() start. ["+menu+"]" );
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate( R.menu.menu_detail_edit, menu );
     }
@@ -328,9 +371,11 @@ public class DetailEditFragment extends Fragment {
                 break;
             case R.id.menu02_kusuri_add :
                 Log.d( CLASS_NAME, "薬［追加］ メニュー選択" );
+                addKusuri();
                 break;
             case R.id.menu02_kusuri_del :
                 Log.d( CLASS_NAME, "薬［削除］ メニュー選択" );
+                delKusuri();
                 break;
             default:
                 break;
