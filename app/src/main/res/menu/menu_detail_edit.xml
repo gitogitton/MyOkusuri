@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu01_shohou"
+        android:title="@string/menu01_shohou"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        >
+        <!-- shohou sub menu to edit -->
+        <menu>
+            <item
+                android:id="@+id/menu02_shohou_add"
+                android:title="@string/menu02_shohou_add"
+                android:orderInCategory="200"
+                app:showAsAction="never"
+                />
+            <item
+                android:id="@+id/menu02_shohou_del"
+                android:title="@string/menu02_shohou_del"
+                android:orderInCategory="300"
+                app:showAsAction="never"
+                />
+            <item
+                android:id="@+id/menu02_shohou_copy"
+                android:title="@string/menu02_shohou_copy"
+                android:orderInCategory="400"
+                app:showAsAction="never"
+                    />
+            <item
+                android:id="@+id/menu02_shohou_save"
+                android:title="@string/menu02_shohou_save"
+                android:orderInCategory="500"
+                app:showAsAction="never"
+                />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/menu01_kusuri"
+        android:title="@string/menu01_kusuri"
+        android:orderInCategory="600"
+        app:showAsAction="ifRoom"
+        >
+        <!-- kusuri sub menu to edit -->
+        <menu>
+            <item
+                android:id="@+id/menu02_kusuri_add"
+                android:title="@string/menu02_kusuri_add"
+                android:orderInCategory="700"
+                app:showAsAction="never"
+                />
+            <item
+                android:id="@+id/menu02_kusuri_del"
+                android:title="@string/menu02_kusuri_del"
+                android:orderInCategory="800"
+                app:showAsAction="never"
+                />
+        </menu>
+    </item>
+
+</menu>

@@ -23,6 +23,7 @@ public class ShohousenData {
     private int mViewId;
     private String mShohouDate;
     private String mYakkyoku;
+    private int mShohouNissu;
     private ArrayList<Kusuri> mKusuri= new ArrayList<>();
 
     public ShohousenData() {
@@ -32,7 +33,6 @@ public class ShohousenData {
     public void setViewId( int id ) {
         mViewId = id;
     }
-
     public int getViewId() {
         return mViewId;
     }
@@ -40,7 +40,6 @@ public class ShohousenData {
     public String getShohouDate() {
         return mShohouDate;
     }
-
     public void setShohouDate(String mShohouDate) {
         this.mShohouDate = mShohouDate;
     }
@@ -48,9 +47,15 @@ public class ShohousenData {
     public String getYakkyoku() {
         return mYakkyoku;
     }
-
     public void setYakkyoku(String mYakkyoku) {
         this.mYakkyoku = mYakkyoku;
+    }
+
+    public int getShohouNissu() {
+        return this.mShohouNissu;
+    }
+    public void setShohouNissu( int shohouNissu ) {
+        this.mShohouNissu = shohouNissu;
     }
 
     //薬の数

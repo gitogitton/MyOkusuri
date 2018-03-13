@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,16 +16,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -36,6 +35,7 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class DetailEditFragment extends Fragment {
+
     private final String CLASS_NAME = getClass().getSimpleName();
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -48,6 +48,8 @@ public class DetailEditFragment extends Fragment {
     private final int mBackgroundColor_2 = Color.parseColor( "#faf0e6" );
 
     private ArrayList<ShohousenData> mShohousenList = new ArrayList<>();  //処方箋リスト
+    private int index = 0; //処方箋をとりあえず１件で・・・
+    private RelativeLayout mShohousenLayout;
 
     private View mView;
     private String mDate;
@@ -128,99 +130,67 @@ public class DetailEditFragment extends Fragment {
     }
 
     private void setListener() {
-        //処方箋［追加］［削除］［登録］ボタン取得
-        Button shohousenButton = getActivity().findViewById( R.id.shohousen_copy_button );
-        Button shohousenDelButton = getActivity().findViewById( R.id.shohousen_del_button );
-        Button shohousenSaveButton = getActivity().findViewById( R.id.shohousen_save_button );
-        //薬［追加］ボタン取得
-        Button kusuriTuikaButton = getActivity().findViewById( R.id.kusuri_tuika_button );
-        //薬［削除］用「×」マークのView取得
-        ImageView kusuriDel = getActivity().findViewById( R.id.imageView );
-
-        shohousenSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d( CLASS_NAME, "処方箋 保存ボタン 押下" );
-                saveShohou( view );
-            }
-        });
-        shohousenButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d( CLASS_NAME, "処方箋 追加ボタン 押下" );
-                addShohou( mDate );
-            }
-        });
-        shohousenDelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d( CLASS_NAME, "処方箋 削除ボタン 押下" );
-
-                View focusView = getActivity().getCurrentFocus();
-                Log.d( CLASS_NAME, "focus -> "+focusView );
-
-                ViewParent vp = focusView.getParent();
-                while( vp!=null ) {
-                    ViewParent viewParent = vp.getParent();
-                    Log.d( CLASS_NAME, "parent view -> "+viewParent );
-                    if ( viewParent instanceof TableLayout ) {
-                        Log.d( CLASS_NAME, "find tableLayout !!" );
-                    }
-                    vp = viewParent;
-                }
-            }
-        });
-        kusuriTuikaButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d( CLASS_NAME, "薬 追加ボタン 押下" );
-
-                //選択中の処方箋viewを取得
-//                ボタンの親Viewをとる！！！（？）
-
-                //薬の入力域を追加
-            }
-        });
-//        kusuriDel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Log.d( CLASS_NAME, "kusuriDel listenner run."+view );
-//
-//                ViewParent vp = view.getParent();
-//                TableRow tableRow = (TableRow)vp;
-//                Log.d( CLASS_NAME, ""+tableRow.getId() ); //id=kusuri
-//                if ( vp instanceof ViewGroup ) {
-//                    Log.d( CLASS_NAME, "ViewParent instanceof ViewGroup" );
-//                }
-//
-//                vp = vp.getParent();
-//                Log.d( CLASS_NAME, ""+vp ); //id=shohousen_header
-//
-//            }
-//        });
+        Log.d( CLASS_NAME, "setListener() start." );
     }
 
-    private void saveShohou( View view ) {
+    private void saveShohou() {
+        Log.d( CLASS_NAME, "saveShohou() start." );
+        //viewID
+        TextView viewIdText = mShohousenLayout.findViewById( R.id.viewID );
+        String viewId = viewIdText.getText().toString();
+        if ( viewIdText.getText()==null ) {
+            Log.d( CLASS_NAME, "viewIDが未設定です。" );
+            return;
+        }
+        Log.d( CLASS_NAME, "viewID："+viewId );
+        //薬局
+        EditText editYakkyoku = mShohousenLayout.findViewById( R.id.edit_yakkyoku );
+        String yakkyoku = editYakkyoku.getText().toString();
+        if ( yakkyoku.isEmpty() ) {
+            Log.d( CLASS_NAME, "薬局が未設定です。" );
+            return;
+        }
+        Log.d( CLASS_NAME, "薬局："+yakkyoku );
+        //処方日数
+        EditText editNissu = mShohousenLayout.findViewById( R.id.edit_nissu );
+        String nissu = editNissu.getText().toString();
+        if ( nissu.isEmpty() ) {
+            Log.d( CLASS_NAME, "処方日数が未設定です。" );
+            return;
+        }
+        Log.d( CLASS_NAME, "処方日数："+nissu );
+        //薬
+        LinearLayout kusuriArea = mShohousenLayout.findViewById( R.id.kusuri_area );
+        int kusuriCount = kusuriArea.getChildCount();
+        Log.d( CLASS_NAME, "薬の数："+kusuriCount );
+        ArrayList<Kusuri> kusuriList = new ArrayList<>();
+        for ( int i=0; i<kusuriCount; i++ ) {
+            TableRow kusuriInfo = (TableRow) kusuriArea.getChildAt( i );
+            EditText editKusuri = kusuriInfo.findViewById( R.id.edit_kusuri );
+            String kusuriMei = editKusuri.getText().toString();
+            Log.d( CLASS_NAME, "薬名 [ "+i+" ] = "+kusuriMei );
+            if ( kusuriMei.isEmpty() ) {
+                Log.d( CLASS_NAME, "未設定の薬名があります。" );
+                return;
+            }
+            Kusuri obj = new Kusuri();
+            obj.setName( kusuriMei );
+            kusuriList.add( obj );
+        }
 
-        Log.d( CLASS_NAME, "saveShohou() start. [view="+view+"]" );
+        //処方箋を編集
+        mShohousenList.get( index ).setViewId( Integer.parseInt( viewId ) ); //viewID
+        mShohousenList.get( index ).setYakkyoku( editYakkyoku.getText().toString() ); //薬局名
+        mShohousenList.get( index ).setShohouNissu( Integer.parseInt( editNissu.getText().toString() ) ); //処方日数
+        //薬セット
+        for ( int i=0; i<kusuriCount; i++ ) {
+            mShohousenList.get( index ).addKusuri( kusuriList.get( i ) );
+        }
+    }
 
-        ScrollView scrollView = (ScrollView) mView.findViewById( R.id.scroll_shohousen );
-        Log.d( CLASS_NAME, "scrollView = "+scrollView );
-
-        Log.d( CLASS_NAME, "scrollView.getChildCount()="+scrollView.getChildCount() );
-
-        LinearLayout linearLayout = (LinearLayout)scrollView.getChildAt( 0 ); //id=shohousen
-
-        Log.d( CLASS_NAME, "linearLayout.getChildCount()="+linearLayout.getChildCount() );
-
-        TableLayout tableLayout = (TableLayout)linearLayout.getChildAt( 0 ); //id=shohousen_header (薬局名など)
-
-        TableLayout tableLayout1 = linearLayout.findViewById( R.id.shohousen );
-
-        Log.d( CLASS_NAME, "linearLayout = "+linearLayout );
-        Log.d( CLASS_NAME, "tableLayout = "+tableLayout );
-        Log.d( CLASS_NAME, "tableLayout1 = "+tableLayout1 );
-
+    private int getKusuriCount() {
+        Log.d( CLASS_NAME, "getKusuriCount() start." );
+        return 0;
     }
 
     private void addShohou( String date ) {
@@ -236,13 +206,12 @@ public class DetailEditFragment extends Fragment {
 
         //処方箋Viewを動的作成し、IDをセットする。
         ScrollView scrollView = (ScrollView) mView.findViewById( R.id.scroll_shohousen ); //処方箋 scrollview
-        TableLayout shohousenArea = (TableLayout) scrollView.getChildAt( 0 ); //処方箋 TableLayout
-        View inflateView = getActivity().getLayoutInflater().inflate( R.layout.shohousen, shohousenArea ); //linearLayout に layout.shohousen を入れる。
+        LinearLayout shohousenArea = (LinearLayout) scrollView.getChildAt( 0 ); //処方箋 TableLayout
+        LinearLayout inflateView = (LinearLayout) getActivity().getLayoutInflater().inflate( R.layout.shohousen, shohousenArea ); //linearLayout に layout.shohousen を入れる。
         inflateView.setId( id );
 
-        TableLayout tableLayout = (TableLayout) ( (TableLayout)inflateView).getChildAt( mShohousenList.size()-1 );
-        TableRow tableRow = (TableRow) tableLayout.getChildAt( 0 );
-        TextView textView = (TextView)tableRow.findViewById( R.id.viewID );
+        mShohousenLayout = (RelativeLayout)inflateView.getChildAt( mShohousenList.size()-1 ); //id=shohousen
+        TextView textView = (TextView)mShohousenLayout.findViewById( R.id.viewID );
         textView.setText( String.valueOf( id ) );
 
         //処方箋View取得、バックカラーをトグルしてセット
@@ -250,18 +219,36 @@ public class DetailEditFragment extends Fragment {
         Log.d( CLASS_NAME, "shohousenCount="+shohousenCount );
         if ( shohousenCount<=0 ) { return; }
         int colorCode = ( (shohousenCount%2==0)?mBackgroundColor_2:mBackgroundColor_1 );
-        TableLayout shohousen = (TableLayout) ( (TableLayout)inflateView ).getChildAt( shohousenCount-1 );
-        shohousen.setBackgroundColor( colorCode );
+        mShohousenLayout.setBackgroundColor( colorCode );
 
         //薬入力域 追加
-        getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, tableLayout );
+        LinearLayout kusuriArea = (LinearLayout) mShohousenLayout.findViewById( R.id.kusuri_area ); //kusuri_area
+        View kusuri = getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, kusuriArea );
+
+        //［薬を追加］ボタンのリスナーを登録する。
+        setListenerOfKusuriBtn();
+    }
+
+    private void setListenerOfKusuriBtn() {
+        Log.d( CLASS_NAME, "setListenerOfKusuriBtn() start." );
+        Button buttonKusuriTuika = mShohousenLayout.findViewById( R.id.kusuri_tuika_button );
+        buttonKusuriTuika.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d( CLASS_NAME, "buttonKusuriTuika listener start." );
+                //薬入力域 追加
+                LinearLayout kusuriArea = (LinearLayout) mShohousenLayout.findViewById( R.id.kusuri_area ); //kusuri_area
+                View kusuri = getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, kusuriArea );
+                Log.d( CLASS_NAME, "kusuri Total Count = "+kusuriArea.getChildCount() );
+            }
+        });
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Log.d( CLASS_NAME, "onCreateOptionsMenu() run. ["+menu+"]" );
         super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate( R.menu.menu_shohousen, menu );
+        inflater.inflate( R.menu.menu_detail_edit, menu );
     }
 
     @Override
@@ -275,7 +262,7 @@ public class DetailEditFragment extends Fragment {
         Log.d( CLASS_NAME, "onOptionsItemSelected() run. ["+item+"]" );
         switch ( item.getItemId() ) {
             case android.R.id.home :
-                Log.d( CLASS_NAME, "onOptionsItemSelected() [ android.R.id.home ]" );
+                Log.d( CLASS_NAME, "[ android.R.id.home ]" );
                 FragmentManager fragmentManager = getFragmentManager();
                 if ( fragmentManager.getBackStackEntryCount()>0 ) {
                     fragmentManager.popBackStack();
@@ -284,11 +271,70 @@ public class DetailEditFragment extends Fragment {
                     Log.d( CLASS_NAME, "BackStack is none." );
                 }
                 break;
+
+            case R.id.menu01_shohou :
+            case R.id.menu02_shohou_add :
+            case R.id.menu02_shohou_del :
+            case R.id.menu02_shohou_copy :
+            case R.id.menu02_shohou_save :
+                selectShohouMenu( item );
+                break;
+
+            case R.id.menu01_kusuri :
+            case R.id.menu02_kusuri_add :
+            case R.id.menu02_kusuri_del :
+                selectKusuriMenu( item );
+                break;
+
             default:
-                Log.d( CLASS_NAME, "onOptionsItemSelected() [ Undefined ]" );
+                Log.d( CLASS_NAME, "[ Undefined Menu ]" );
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void selectShohouMenu( MenuItem item ) {
+        Log.d( CLASS_NAME, "selectShohouMenu() run. ["+item+"]" );
+        switch ( item.getItemId() ) {
+            case R.id.menu01_shohou :
+                Log.d( CLASS_NAME, "＜処方箋＞ メニュー選択" );
+                //do nothing so display sub menu by android
+                break;
+            case R.id.menu02_shohou_add :
+                Log.d( CLASS_NAME, "処方箋［追加］ メニュー選択" );
+                addShohou( mDate );
+                break;
+            case R.id.menu02_shohou_del :
+                Log.d( CLASS_NAME, "処方箋［削除］ メニュー選択" );
+                break;
+            case R.id.menu02_shohou_copy :
+                Log.d( CLASS_NAME, "処方箋［コピー］ メニュー選択" );
+                break;
+            case R.id.menu02_shohou_save :
+                Log.d( CLASS_NAME, "処方箋［保存ー］ メニュー選択" );
+                saveShohou();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void selectKusuriMenu( MenuItem item ) {
+        Log.d( CLASS_NAME, "selectKusuriMenu() run. ["+item+"]" );
+        switch ( item.getItemId() ) {
+            case R.id.menu01_kusuri :
+                Log.d( CLASS_NAME, "＜薬＞ メニュー選択" );
+                //do nothing so display sub menu by android
+                break;
+            case R.id.menu02_kusuri_add :
+                Log.d( CLASS_NAME, "薬［追加］ メニュー選択" );
+                break;
+            case R.id.menu02_kusuri_del :
+                Log.d( CLASS_NAME, "薬［削除］ メニュー選択" );
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

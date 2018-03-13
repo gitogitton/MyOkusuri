@@ -1,28 +1,42 @@
 <resources>
-    <!--画面名称-->
+<!--画面名称-->
     <string name="app_name">お薬(main)</string>
     <string name="title_calender">カレンダーから編集</string>
     <string name="title_edit">詳細編集</string>
-    <!--メイン画面-->
+<!--メイン画面-->
     <string name="button_calender">カレンダーから編集</string>
     <string name="kusuri_itiran">服用中薬一覧</string>
-    <!--カレンダー画面-->
+<!--カレンダー画面-->
     <string name="menu_calender_01">メニュー１</string>
     <string name="hello_calender_fragment">Hello Calender fragment</string>
     <string name="hello_itiran_fragment">Hello Itiran fragment</string>
     <string name="calender_date_none"></string>
     <string name="button_prev">前月</string>
     <string name="button_next">次月</string>
-    <!--詳細編集画面-->
-    <string name="menu_shohousen_01">処方箋コピー</string>
+<!--詳細編集画面-->
+    <string name="prev_shohou">＜＜前</string>
+    <string name="next_shohou">次＞＞</string>
+    <string name="menu01_shohou">＜処方箋＞</string>
+    <string name="menu02_shohou_add">[追加]</string>
+    <string name="menu02_shohou_del">[削除]</string>
+    <string name="menu02_shohou_copy">[コピー]</string>
+    <string name="menu02_shohou_save">[保存]</string>
+    <string name="menu01_kusuri">＜薬＞</string>
+    <string name="menu02_kusuri_add">[追加]</string>
+    <string name="menu02_kusuri_del">[削除]</string>
+
     <string name="button_shohou_copy">［追加］</string>
     <string name="button_shohou_del">［削除］</string>
     <string name="button_shohou_save">［登録］</string>
     <string name="button_kusuri_tuika">薬［追加］</string>
     <string name="button_kusuri_sakujo">薬［削除］</string>
+
     <string name="item_date">日付</string>
     <string name="item_name_yakkyokumei">薬局名：</string>
     <string name="item_name_kusurimei">薬名：</string>
     <string name="item_name_nissu">処方日数：</string>
+    <string name="hint_name_yakkyoku">薬局名を入力</string>
+    <string name="hint_nissu_nyuryoku">何日分？</string>
+
     <string name="description_01">この薬を削除</string>
 </resources>

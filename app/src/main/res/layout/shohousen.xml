@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/shohousen"
     android:layout_width="match_parent"
@@ -7,80 +7,69 @@
     android:background="#e0ffff"
     >
 
-    <TableRow
-        android:id="@+id/row_yakkyoku"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:id="@+id/viewID"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text=""
-            android:textSize="20sp"
-            />
-        <TextView
-            android:id="@+id/item_yakkyoku"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/item_name_yakkyokumei"
-            android:textSize="20sp" />
-        <EditText
-            android:id="@+id/edit_yakkyoku"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_weight="10"
-            android:hint="薬局名を入力"
-            android:inputType="text"
-            />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:id="@+id/item_nissu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/item_name_nissu"
-            android:textSize="20sp"
-            />
-        <EditText
-            android:id="@+id/edit_nissu"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_weight="10"
-            android:hint="何日分？"
-            android:inputType="number"
-            />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/viewID"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="10sp"
-        >
-        <Button
-            android:id="@+id/kusuri_tuika_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/button_kusuri_tuika"
-            />
-    </TableRow>
+        android:layout_marginEnd="10sp"
+        android:textSize="20sp" />
 
-    <TableRow
+    <TextView
+        android:id="@+id/item_yakkyoku"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/viewID"
+        android:text="@string/item_name_yakkyokumei"
+        android:textSize="20sp"
+        />
+
+    <EditText
+        android:id="@+id/edit_yakkyoku"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/item_yakkyoku"
+        android:layout_alignBaseline="@id/item_yakkyoku"
+        android:hint="@string/hint_name_yakkyoku"
+        android:inputType="text"
+        android:textSize="20sp"
+        />
+
+    <TextView
+        android:id="@+id/item_nissu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_yakkyoku"
+        android:layout_marginTop="10sp"
+        android:text="@string/item_name_nissu"
+        android:textSize="20sp"
+        />
+    <EditText
+        android:id="@+id/edit_nissu"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/item_yakkyoku"
+        android:layout_toEndOf="@id/item_nissu"
+        android:hint="@string/hint_nissu_nyuryoku"
+        android:inputType="number"
+        />
+
+    <Button
+        android:id="@+id/kusuri_tuika_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/item_nissu"
+        android:layout_marginTop="20sp"
+        android:text="@string/button_kusuri_tuika"
+        />
+
+    <LinearLayout
         android:id="@+id/kusuri_area"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_below="@id/kusuri_tuika_button"
+        android:orientation="vertical"
         android:paddingTop="10sp"
         >
-    </TableRow>
+    </LinearLayout>
 
-</TableLayout>
+</RelativeLayout>
