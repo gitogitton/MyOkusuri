@@ -116,7 +116,7 @@ public class DetailEditFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.d( CLASS_NAME, "onViewCreated() run."+mParam1 );
+        Log.d( CLASS_NAME, "onViewCreated() start."+mParam1 );
         setHasOptionsMenu( true ); //オプションメニューを使用する事を宣言
         super.onViewCreated(view, savedInstanceState);
         //actionBar設定
@@ -139,7 +139,7 @@ public class DetailEditFragment extends Fragment {
     }
 
     private void storeShohouWithCheck() {
-        Log.d( CLASS_NAME, "saveShohouWithCheck() start." );
+        Log.d( CLASS_NAME, "storeShohouWithCheck() start." );
         if ( !checkShohousenHeader() ) {
             return;
         }
@@ -181,7 +181,7 @@ public class DetailEditFragment extends Fragment {
     }
 
     private void storeShohouWithNoCheck() {
-        Log.d( CLASS_NAME, "saveShohouWithNoCheck() start." );
+        Log.d( CLASS_NAME, "storeShohouWithNoCheck() start." );
         //処方箋を編集
         int savePos = getCurrentShohouPage()-1;
         //No
@@ -241,43 +241,33 @@ public class DetailEditFragment extends Fragment {
 
     private void initShohouView( String date ) {
         Log.d( CLASS_NAME, "initShohou() start." );
-
         //処方箋データ生成
-//        int id = View.generateViewId(); //動的viewにふるIDをシステムで生成
         ShohousenData shohousenData = new ShohousenData();
         shohousenData.setNo( ++ mNo );
         shohousenData.setShohouDate( mDate );
         mShohousenList.add( shohousenData );
-
         //ViewのIDをセット
         ScrollView scrollView = (ScrollView) mView.findViewById( R.id.scroll_shohousen ); //処方箋 scrollview
         mShohousenLayout = (RelativeLayout)scrollView.findViewById( R.id.shohousen_layout ); //id=shohousen_layout
         TextView textView = (TextView)mShohousenLayout.findViewById( R.id.text_number);
         textView.setText( String.valueOf( mNo ) );
-
-        //ページ数をセット
+        //ページをセット
         setShohouPage( mShohousenList.size() );
-
         //薬入力域 追加
         addKusuri();
-
         //［薬を追加］ボタンのリスナーを登録する。
         setListenerOfKusuriBtn();
     }
 
     private void addShohou( String date ) {
         Log.d( CLASS_NAME, "addShohou() start." );
-
         //処方箋データ生成
-//        int id = View.generateViewId(); //動的viewにふるIDをシステムで生成
         ShohousenData shohousenData = new ShohousenData();
         shohousenData.setNo( ++ mNo );
         shohousenData.setShohouDate( mDate );
         mShohousenList.add( shohousenData );
-
-        //ページ数をセット
+        //ページをセット
         setShohouPage( mShohousenList.size() );
-
         //処方箋Viewの内容をリセット
         ScrollView scrollView = (ScrollView) mView.findViewById( R.id.scroll_shohousen ); //処方箋 scrollview
         mShohousenLayout = (RelativeLayout)scrollView.findViewById( R.id.shohousen_layout ); //id=shohousen_layout
@@ -287,7 +277,6 @@ public class DetailEditFragment extends Fragment {
         editYakkoku.setText( "" );
         EditText editNisuu = (EditText)mShohousenLayout.findViewById( R.id.edit_nissu );
         editNisuu.setText( "" );
-
         //２つ以上の薬入力域があれば１つだけにする。
         LinearLayout kusuriArea = mShohousenLayout.findViewById( R.id.kusuri_area );
         int kusuriCount = kusuriArea.getChildCount(); //row_kusuri の数
@@ -336,6 +325,11 @@ public class DetailEditFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "＜前＞ push." );
+                int page = getCurrentShohouPage();
+                if ( page <= 1) {
+                    Log.d( CLASS_NAME, "先頭ページです。" );
+                    return;
+                }
                 storeShohouWithNoCheck(); //現在のページをチェック無しで内部バッファに保存
                 showPrevShohou();
             }
@@ -344,6 +338,11 @@ public class DetailEditFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "＜次＞ push." );
+                int page = getCurrentShohouPage();
+                if ( page >= mShohousenList.size() ) {
+                    Log.d( CLASS_NAME, "最終ページです。" );
+                    return;
+                }
                 storeShohouWithNoCheck(); //現在のページをチェック無しで内部バッファに保存
                 showNextShohou();
             }
@@ -450,7 +449,6 @@ public class DetailEditFragment extends Fragment {
         LinearLayout kusuri = (LinearLayout)getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, kusuriArea );
         Log.d( CLASS_NAME, "kusuri Total Count = "+kusuriArea.getChildCount() );
         //[×]ボタンのリスナー登録
-//        TableRow kusuriRow = (TableRow) kusuri.findViewById( R.id.row_kusuri ); //IDがみんな同じだから先頭しか取れない！！！
         TableRow kusuriRow = (TableRow) kusuri.getChildAt( nextRow );
         ImageView imageView = kusuriRow.findViewById( R.id.imageView );
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -498,13 +496,13 @@ public class DetailEditFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        Log.d( CLASS_NAME, "onPrepareOptionsMenu() run. ["+menu+"]" );
+        Log.d( CLASS_NAME, "onPrepareOptionsMenu() start. ["+menu+"]" );
         super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.d( CLASS_NAME, "onOptionsItemSelected() run. ["+item+"]" );
+        Log.d( CLASS_NAME, "onOptionsItemSelected() start. ["+item+"]" );
         switch ( item.getItemId() ) {
             case android.R.id.home :
                 Log.d( CLASS_NAME, "[ android.R.id.home ]" );
@@ -543,7 +541,7 @@ public class DetailEditFragment extends Fragment {
     }
 
     private void selectShohouMenu( MenuItem item ) {
-        Log.d( CLASS_NAME, "selectShohouMenu() run. ["+item+"]" );
+        Log.d( CLASS_NAME, "selectShohouMenu() start. ["+item+"]" );
         switch ( item.getItemId() ) {
             case R.id.menu01_shohou :
                 Log.d( CLASS_NAME, "＜処方箋＞ メニュー選択" );
@@ -565,14 +563,21 @@ public class DetailEditFragment extends Fragment {
                 Log.d( CLASS_NAME, "処方箋［保存ー］ メニュー選択" );
                 storeShohouWithCheck();
                 Log.d( CLASS_NAME, "mShohousenList count："+mShohousenList.size() );
+                saveShohouToFile();
                 break;
             default:
                 break;
         }
     }
 
+    private void saveShohouToFile() {
+        Log.d( CLASS_NAME, "saveShohouToFile() start." );
+        int savedCount = mShohousenList.size(); //処方箋数
+        String savedDate = mShohousenList.get( 0 ).getShohouDate(); //日付（ファイル名にする）
+    }
+
     private void selectKusuriMenu( MenuItem item ) {
-        Log.d( CLASS_NAME, "selectKusuriMenu() run. ["+item+"]" );
+        Log.d( CLASS_NAME, "selectKusuriMenu() start. ["+item+"]" );
         switch ( item.getItemId() ) {
             case R.id.menu01_kusuri :
                 Log.d( CLASS_NAME, "＜薬＞ メニュー選択" );
