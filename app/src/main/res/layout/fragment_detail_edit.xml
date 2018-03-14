@@ -22,6 +22,15 @@
         android:layout_below="@id/select_date"
         android:text="@string/prev_shohou"
         />
+    <TextView
+        android:id="@+id/text_shohouPage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/select_date"
+        android:layout_centerHorizontal="true"
+        android:text="@string/shohou_page"
+        android:textSize="30sp"
+        />
     <Button
         android:id="@+id/button_nextShohou"
         android:layout_width="wrap_content"
@@ -37,14 +46,19 @@
         android:layout_below="@id/button_prevShohou"
         android:fadeScrollbars="false"
         >
+        <include
+            layout="@layout/shohousen"
+            android:id="@+id/shohousen_layout"
+        />
+<!--
         <LinearLayout
             android:id="@+id/shohousen_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             >
         </LinearLayout>
-
+-->
     </ScrollView>
 
 </RelativeLayout>

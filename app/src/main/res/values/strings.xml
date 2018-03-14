@@ -16,6 +16,8 @@
 <!--詳細編集画面-->
     <string name="prev_shohou">＜＜前</string>
     <string name="next_shohou">次＞＞</string>
+    <string name="shohou_page">1/1</string>
+    <string name="page_separator">" / "</string>
     <string name="menu01_shohou">＜処方箋＞</string>
     <string name="menu02_shohou_add">[追加]</string>
     <string name="menu02_shohou_del">[削除]</string>
