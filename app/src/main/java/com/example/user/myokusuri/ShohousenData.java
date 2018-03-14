@@ -66,9 +66,17 @@ public class ShohousenData {
     public void addKusuri( Kusuri kusuri ) {
         mKusuri.add( kusuri );
     }
+    //薬を取得
+    public Kusuri getKusuri( int index ) {
+        return mKusuri.get( index );
+    }
     //薬の削除
     public void removeKusuri( int index ) {
         mKusuri.remove( index );
     }
-
+    public void removeAllKusuri() {
+        for ( int i=0; i<countOfKusuri(); i++ ) {
+            removeKusuri( i );
+        }
+    }
 }

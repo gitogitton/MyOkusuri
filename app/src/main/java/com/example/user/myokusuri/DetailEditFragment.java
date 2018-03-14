@@ -101,6 +101,10 @@ public class DetailEditFragment extends Fragment {
                 Log.d( CLASS_NAME, "onKey() [i/keyEvent="+i+"/"+keyEvent+"]" );
                 if ( i == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_DOWN ) {
                     Log.d( CLASS_NAME, "Back key" );
+                    for ( int j=0; j<mShohousenList.size(); j++ ) {
+                        mShohousenList.get( j ).removeAllKusuri();
+                    }
+                    mShohousenList.clear();
                 }
                 return false;
             }
@@ -134,7 +138,7 @@ public class DetailEditFragment extends Fragment {
         Log.d( CLASS_NAME, "setListener() start." );
     }
 
-    private void saveShohouWithCheck() {
+    private void storeShohouWithCheck() {
         Log.d( CLASS_NAME, "saveShohouWithCheck() start." );
         if ( !checkShohousenHeader() ) {
             return;
@@ -176,7 +180,7 @@ public class DetailEditFragment extends Fragment {
         }
     }
 
-    private void saveShohouWithNoCheck() {
+    private void storeShohouWithNoCheck() {
         Log.d( CLASS_NAME, "saveShohouWithNoCheck() start." );
         //処方箋を編集
         int savePos = getCurrentShohouPage()-1;
@@ -332,21 +336,21 @@ public class DetailEditFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "＜前＞ push." );
-                saveShohouWithNoCheck(); //現在のページをチェック無しで内部バッファに保存
-                displayPrevShohou();
+                storeShohouWithNoCheck(); //現在のページをチェック無しで内部バッファに保存
+                showPrevShohou();
             }
         });
         nextShohou.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d( CLASS_NAME, "＜次＞ push." );
-                saveShohouWithNoCheck(); //現在のページをチェック無しで内部バッファに保存
-                displayNextShohou();
+                storeShohouWithNoCheck(); //現在のページをチェック無しで内部バッファに保存
+                showNextShohou();
             }
         });
     }
 
-    private void displayNextShohou() {
+    private void showNextShohou() {
         Log.d( CLASS_NAME, "displayNextShohou() start." );
         int currentPage = getCurrentShohouPage();
         if ( currentPage+1 > mShohousenList.size()  ) { //最終ページです。
@@ -366,9 +370,27 @@ public class DetailEditFragment extends Fragment {
         EditText textNissu = mShohousenLayout.findViewById( R.id.edit_nissu );
         textNissu.setText( String.valueOf( shohousenData.getShohouNissu() ) );
         //薬
+        int kusuriAreaCount = mShohousenLayout.getChildCount(); //薬名エリアの数
+        int kusuriDataCount = shohousenData.countOfKusuri(); //薬名データ数
+        if ( kusuriAreaCount < kusuriDataCount) { //薬名エリアがデータ数より少なかったら作成
+            for ( int i=kusuriAreaCount; i<kusuriDataCount; i++ ) {
+                addKusuri();
+            }
+        }
+        else if ( kusuriAreaCount > kusuriDataCount ) { //薬名エリアがデータ数より多かったら削除
+            for ( int i=kusuriDataCount; i<kusuriAreaCount; i++ ) {
+                View removeView = mShohousenLayout.getChildAt( i );
+                mShohousenLayout.removeView( removeView );
+            }
+        }
+        for ( int i=0; i<kusuriDataCount; i++ ) {
+            TableRow rowKusuri = (TableRow)mShohousenLayout.getChildAt( i );
+            EditText editKusuri = rowKusuri.findViewById( R.id.edit_kusuri );
+            editKusuri.setText( shohousenData.getKusuri( i ).getName() );
+        }
     }
 
-    private void displayPrevShohou() {
+    private void showPrevShohou() {
         Log.d( CLASS_NAME, "displayPrevShohou() start." );
         int currentPage = getCurrentShohouPage();
         if ( currentPage<=1 ) { //先頭です。
@@ -388,6 +410,24 @@ public class DetailEditFragment extends Fragment {
         EditText textNissu = mShohousenLayout.findViewById( R.id.edit_nissu );
         textNissu.setText( String.valueOf( shohousenData.getShohouNissu() ) );
         //薬
+        LinearLayout kusuriData = mShohousenLayout.findViewById( R.id.kusuri_area ); //処方箋の薬欄
+        int kusuriAreaCount = kusuriData.getChildCount(); //薬名エリアの数
+        int kusuriDataCount = shohousenData.countOfKusuri(); //薬名データ数
+        if ( kusuriAreaCount < kusuriDataCount) { //薬名エリアがデータ数より少なかったら作成
+            for ( int i=kusuriAreaCount; i<kusuriDataCount; i++ ) {
+                addKusuri();
+            }
+        }
+        else if ( kusuriAreaCount > kusuriDataCount ) { //薬名エリアがデータ数より多かったら削除
+            for ( int i=kusuriDataCount; i<kusuriAreaCount; i++ ) {
+                kusuriData.removeView(  kusuriData.getChildAt( i ) );
+            }
+        }
+        for ( int i=0; i<kusuriDataCount; i++ ) {
+            TableRow kusuriRow = (TableRow) kusuriData.getChildAt( i );
+            EditText editKusuri = kusuriRow.findViewById( R.id.edit_kusuri );
+            editKusuri.setText( shohousenData.getKusuri( i ).getName() );
+        }
     }
 
     private void setListenerOfKusuriBtn() {
@@ -405,7 +445,7 @@ public class DetailEditFragment extends Fragment {
     private void addKusuri() {
         Log.d( CLASS_NAME, "addKusuri() start." );
         //薬入力域 追加
-        LinearLayout kusuriArea = (LinearLayout) mShohousenLayout.findViewById( R.id.kusuri_area ); //kusuri_area
+        LinearLayout kusuriArea = mShohousenLayout.findViewById( R.id.kusuri_area ); //kusuri_area
         int nextRow = kusuriArea.getChildCount();
         LinearLayout kusuri = (LinearLayout)getActivity().getLayoutInflater().inflate( R.layout.shohousen_kusuri, kusuriArea );
         Log.d( CLASS_NAME, "kusuri Total Count = "+kusuriArea.getChildCount() );
@@ -427,7 +467,6 @@ public class DetailEditFragment extends Fragment {
         ViewParent viewParent = view.getParent();
         EditText editText = ( (ViewGroup)viewParent ).findViewById( R.id.edit_kusuri );
         editText.setText( "" );
-        return;
     }
 
     private void delKusuri() {
@@ -435,7 +474,7 @@ public class DetailEditFragment extends Fragment {
         View hasFocusView = getActivity().getCurrentFocus();
         if ( hasFocusView instanceof EditText ) {
             Log.d( CLASS_NAME, "instanceof EditText" );
-            if ( ( (EditText)hasFocusView).getId()==R.id.edit_kusuri ) {
+            if ( hasFocusView.getId()==R.id.edit_kusuri ) {
                 Log.d( CLASS_NAME, "フォーカスのある薬" );
                 ViewParent removeRow = hasFocusView.getParent(); //row_kusuri
                 ViewParent parent = removeRow.getParent(); //kusuri_area
@@ -469,6 +508,10 @@ public class DetailEditFragment extends Fragment {
         switch ( item.getItemId() ) {
             case android.R.id.home :
                 Log.d( CLASS_NAME, "[ android.R.id.home ]" );
+                for ( int i=0; i<mShohousenList.size(); i++ ) {
+                    mShohousenList.get( i ).removeAllKusuri();
+                }
+                mShohousenList.clear();
                 FragmentManager fragmentManager = getFragmentManager();
                 if ( fragmentManager.getBackStackEntryCount()>0 ) {
                     fragmentManager.popBackStack();
@@ -508,7 +551,7 @@ public class DetailEditFragment extends Fragment {
                 break;
             case R.id.menu02_shohou_add :
                 Log.d( CLASS_NAME, "処方箋［追加］ メニュー選択" );
-                saveShohouWithCheck();
+                storeShohouWithCheck();
                 addShohou( mDate );
                 Log.d( CLASS_NAME, "mShohousenList count："+mShohousenList.size() );
                 break;
@@ -520,7 +563,7 @@ public class DetailEditFragment extends Fragment {
                 break;
             case R.id.menu02_shohou_save :
                 Log.d( CLASS_NAME, "処方箋［保存ー］ メニュー選択" );
-                saveShohouWithCheck();
+                storeShohouWithCheck();
                 Log.d( CLASS_NAME, "mShohousenList count："+mShohousenList.size() );
                 break;
             default:
