@@ -20,7 +20,7 @@ public class ShohousenData {
 
     final String TAG = getClass().getSimpleName();
 
-    private int mViewId;
+    private int mNo;
     private String mShohouDate;
     private String mYakkyoku;
     private int mShohouNissu;
@@ -30,11 +30,11 @@ public class ShohousenData {
         Log.d( TAG, "ShohousenData()" );
     }
 
-    public void setViewId( int id ) {
-        mViewId = id;
+    public void setNo( int no ) {
+        mNo = no;
     }
-    public int getViewId() {
-        return mViewId;
+    public int getNo() {
+        return mNo;
     }
 
     public String getShohouDate() {
