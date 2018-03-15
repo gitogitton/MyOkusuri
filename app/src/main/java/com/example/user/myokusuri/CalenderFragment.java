@@ -166,7 +166,7 @@ public class CalenderFragment extends Fragment {
         Log.d( CLASS_NAME, "editMemo() run." );
         Log.d( CLASS_NAME, "selected date : "+mCurrentYear+"/"+mCurrentMonth+"/"+textView.getText() );
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        String inputDate = String.valueOf( mCurrentYear )+"/"+String.valueOf( mCurrentMonth )+"/"+textView.getText();
+        String inputDate = String.valueOf( mCurrentYear )+"/"+String.valueOf( mCurrentMonth )+"/"+textView.getText(); //yyyy/m/d
         fragmentTransaction.replace( R.id.container, DetailEditFragment.newInstance( inputDate, "" ) );
         fragmentTransaction.addToBackStack( null );
         fragmentTransaction.commit();
