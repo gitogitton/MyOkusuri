@@ -74,9 +74,8 @@ public class ShohousenData {
     public void removeKusuri( int index ) {
         mKusuri.remove( index );
     }
-    public void removeAllKusuri() {
-        for ( int i=0; i<countOfKusuri(); i++ ) {
-            removeKusuri( i );
-        }
+    //薬データ全クリア
+    public void clearKusuri() {
+        mKusuri.clear();
     }
 }

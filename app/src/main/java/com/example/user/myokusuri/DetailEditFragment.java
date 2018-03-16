@@ -37,6 +37,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link DetailEditFragment#newInstance} factory method to
@@ -110,7 +111,7 @@ public class DetailEditFragment extends Fragment {
                 if (i == KeyEvent.KEYCODE_BACK && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                     Log.d(CLASS_NAME, "Back key");
                     for (int j = 0; j < mShohousenList.size(); j++) {
-                        mShohousenList.get(j).removeAllKusuri();
+                        mShohousenList.get(j).clearKusuri();
                     }
                     mShohousenList.clear();
                 }
@@ -158,7 +159,8 @@ public class DetailEditFragment extends Fragment {
         ArrayList<Kusuri> kusuriList = new ArrayList<>();
         for (int i = 0; i < kusuriCount; i++) {
             TableRow kusuriInfo = (TableRow) kusuriArea.getChildAt(i);
-            EditText editKusuri = kusuriInfo.findViewById(R.id.edit_kusuri);
+//            EditText editKusuri = (EditText) kusuriInfo.getChildAt( i );
+            EditText editKusuri = (EditText) kusuriInfo.findViewById( R.id.edit_kusuri );
             String kusuriMei = editKusuri.getText().toString();
             Log.d(CLASS_NAME, "薬名 [ " + i + " ] = " + kusuriMei);
             if (kusuriMei.isEmpty()) {
@@ -170,9 +172,16 @@ public class DetailEditFragment extends Fragment {
             kusuriList.add(obj);
         }
         //処方箋を編集
+        //Date
+//        ViewParent scrollShohousen = mShohousenLayout.getParent();  //id=scroll_shohousen
+//        RelativeLayout detailEdit = (RelativeLayout) scrollShohousen.getParent(); //relativlayout
+//        TextView textDate = detailEdit.findViewById( R.id.select_date );
+        TextView textDate = mView.findViewById( R.id.select_date );
+        String date = textDate.getText().toString();
+        mShohousenList.get( index ).setShohouDate( date );
         //No
-        TextView noText = mShohousenLayout.findViewById(R.id.text_number);
-        String no = noText.getText().toString();
+        TextView textNo = mShohousenLayout.findViewById(R.id.text_number);
+        String no = textNo.getText().toString();
         mShohousenList.get(index).setNo(Integer.parseInt(no)); //viewID
         //薬局
         EditText editYakkyoku = mShohousenLayout.findViewById(R.id.edit_yakkyoku);
@@ -183,6 +192,7 @@ public class DetailEditFragment extends Fragment {
         String nissu = editNissu.getText().toString();
         mShohousenList.get(index).setShohouNissu(Integer.parseInt(editNissu.getText().toString())); //処方日数
         //薬セット
+        mShohousenList.get(index).clearKusuri();
         for (int i = 0; i < kusuriCount; i++) {
             mShohousenList.get(index).addKusuri(kusuriList.get(i));
         }
@@ -219,7 +229,7 @@ public class DetailEditFragment extends Fragment {
 
     private boolean checkShohousenHeader() {
         Log.d(CLASS_NAME, "checkShohousenHeader() start.");
-        //viewID
+        //No
         TextView viewIdText = mShohousenLayout.findViewById(R.id.text_number);
         String viewId = viewIdText.getText().toString();
 //        if ( viewIdText.getText()==null ) {
@@ -247,6 +257,15 @@ public class DetailEditFragment extends Fragment {
         return true;
     }
 
+    //読み込むCSVファイルの項目 ----> 使うの面倒そうなので止める・・・・
+    public enum Csv_Item {
+        DATE,
+        NO,
+        YAKKYO_MEI,
+        SHOHOU_NISSU,
+        KUSURI_MEI
+    }
+
     private void initShohou( String date ) {
         Log.d( CLASS_NAME, "initShohou() start." );
 
@@ -268,11 +287,12 @@ public class DetailEditFragment extends Fragment {
                 while ( ( readData = bufferedReader.readLine() ) != null ) {
                     String[] lineData = readData.split( splitChara );
                     Log.d( CLASS_NAME, "lineData length : "+lineData.length );
-                    shohou.setNo( Integer.parseInt( lineData[0] ) ); //No
-                    shohou.setYakkyoku( lineData[1] ); //薬局名
-                    shohou.setShohouNissu( Integer.parseInt( lineData[2] ) ); //処方日数
+                    shohou.setShohouDate( lineData[ 0 ] ); //処方日付
+                    shohou.setNo( Integer.parseInt( lineData[1] ) ); //No
+                    shohou.setYakkyoku( lineData[2] ); //薬局名
+                    shohou.setShohouNissu( Integer.parseInt( lineData[3] ) ); //処方日数
                     //薬名（複数あり）
-                    for ( int i=3; i<lineData.length; i++ ) {
+                    for ( int i=4; i<lineData.length; i++ ) {
                         Kusuri kusuri = new Kusuri();
                         kusuri.setViewId( 0 );
                         kusuri.setName( lineData[ i ] );
@@ -298,12 +318,14 @@ public class DetailEditFragment extends Fragment {
 
     private void initShohouView( String date, ArrayList<ShohousenData> array ) {
         Log.d( CLASS_NAME, "initShohouView( date, readData ) start." );
-
         //Viewにデータセット（初期状態なので１ページ目で決め打ち）
+        TextView textDate = mView.findViewById( R.id.select_date ); //処方日付
         ScrollView scrollView = (ScrollView) mView.findViewById( R.id.scroll_shohousen ); //処方箋 scrollview
         mShohousenLayout = (RelativeLayout)scrollView.findViewById( R.id.shohousen_layout ); //id=shohousen_layout
+
         TextView textView = (TextView)mShohousenLayout.findViewById( R.id.text_number);
         textView.setText( String.valueOf( array.get( 0 ).getNo() ) ); //No
+        mNo = array.get( 0 ).getNo();
         EditText editYakkyoku = mShohousenLayout.findViewById( R.id.edit_yakkyoku );
         editYakkyoku.setText( array.get( 0 ).getYakkyoku() ); //薬局名
         EditText editNissu = mShohousenLayout.findViewById( R.id.edit_nissu );
@@ -317,13 +339,14 @@ public class DetailEditFragment extends Fragment {
             EditText editKusuri = rowKusuri.getChildAt( i ).findViewById( R.id.edit_kusuri );
             editKusuri.setText( mShohousenList.get( 0 ).getKusuri( i ).getName() );
         }
-
         //ページをセット
         setShohouPageNo( mShohousenList.size() );
+
 //        //薬入力域 追加
 //        addKusuriArea();
-//        //［薬を追加］ボタンのリスナーを登録する。
-//        setListenerOfKusuriBtn();
+
+        //［薬を追加］ボタンのリスナーを登録する。
+        setListenerOfKusuriBtn();
     }
 
     private void initShohouView( String date ) {
@@ -469,7 +492,8 @@ public class DetailEditFragment extends Fragment {
         EditText textNissu = mShohousenLayout.findViewById( R.id.edit_nissu );
         textNissu.setText( String.valueOf( shohousenData.getShohouNissu() ) );
         //薬
-        int kusuriAreaCount = mShohousenLayout.getChildCount(); //薬名エリアの数
+        LinearLayout kusuriArea =  mShohousenLayout.findViewById( R.id.kusuri_area );
+        int kusuriAreaCount = kusuriArea.getChildCount(); //薬名エリアの数
         int kusuriDataCount = shohousenData.countOfKusuri(); //薬名データ数
         if ( kusuriAreaCount < kusuriDataCount) { //薬名エリアがデータ数より少なかったら作成
             for ( int i=kusuriAreaCount; i<kusuriDataCount; i++ ) {
@@ -478,13 +502,13 @@ public class DetailEditFragment extends Fragment {
         }
         else if ( kusuriAreaCount > kusuriDataCount ) { //薬名エリアがデータ数より多かったら削除
             for ( int i=kusuriDataCount; i<kusuriAreaCount; i++ ) {
-                View removeView = mShohousenLayout.getChildAt( i );
-                mShohousenLayout.removeView( removeView );
+                View removeView = kusuriArea.getChildAt( i );
+                kusuriArea.removeView( removeView );
             }
         }
         for ( int i=0; i<kusuriDataCount; i++ ) {
-            TableRow rowKusuri = (TableRow)mShohousenLayout.getChildAt( i );
-            EditText editKusuri = rowKusuri.findViewById( R.id.edit_kusuri );
+            TableRow kusuriRow = (TableRow) kusuriArea.getChildAt( i );
+            EditText editKusuri = kusuriRow.findViewById( R.id.edit_kusuri );
             editKusuri.setText( shohousenData.getKusuri( i ).getName() );
         }
     }
@@ -607,7 +631,7 @@ public class DetailEditFragment extends Fragment {
             case android.R.id.home :
                 Log.d( CLASS_NAME, "[ android.R.id.home ]" );
                 for ( int i=0; i<mShohousenList.size(); i++ ) {
-                    mShohousenList.get( i ).removeAllKusuri();
+                    mShohousenList.get( i ).clearKusuri();
                 }
                 mShohousenList.clear();
                 FragmentManager fragmentManager = getFragmentManager();
@@ -718,6 +742,8 @@ public class DetailEditFragment extends Fragment {
             for ( ShohousenData shohousenData : mShohousenList ) {
                 StringBuffer stringBuffer = new StringBuffer();
                 String strSep = ",";
+                stringBuffer.append( shohousenData.getShohouDate() ); //日付
+                stringBuffer.append( strSep );
                 stringBuffer.append( shohousenData.getNo() ); //No
                 stringBuffer.append( strSep );
                 stringBuffer.append( shohousenData.getYakkyoku() ); //薬局名
