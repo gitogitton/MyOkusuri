@@ -297,6 +297,19 @@ public class CalenderFragment extends Fragment {
             textViewCount = tableRow.getChildCount();
             for ( int j=0; tableRow!=null && j<textViewCount; j++ ) {
                 TextView textView = (TextView)tableRow.getChildAt( j );
+                int backgroudColor = (j % 2 == 0) ? Color.parseColor( "#afeeee" ):Color.parseColor( "#ffffe0" );
+                int textColor;
+                switch ( j % 7 ) {
+                    case 0 : //sunday
+                        textColor = Color.RED;
+                        break;
+                    case 6 : //saturday
+                        textColor = Color.BLUE;
+                        break;
+                    default: //others
+                        textColor = Color.BLACK;
+                        break;
+                }
                 if ( i==0 && (j+1)<dayOfTheWeek ) { //月の最初の週、且つ、開始曜日でない場合はnullクリア。
                     textView.setText( R.string.calender_date_none );
                 }
@@ -309,7 +322,12 @@ public class CalenderFragment extends Fragment {
                         stringBuffer.append( ".csv" );
                         String fileName = stringBuffer.toString();
                         if ( isShohouExist( fileName ) ) {
-                            textView.setBackgroundColor(Color.BLUE );
+                            textView.setTextColor( Color.WHITE );
+                            textView.setBackgroundColor( Color.BLUE );
+                        }
+                        else {
+                            textView.setTextColor( textColor );
+                            textView.setBackgroundColor( backgroudColor );
                         }
                         textView.setText( String.valueOf( date ) );
                         Log.d( CLASS_NAME, "date="+date );
