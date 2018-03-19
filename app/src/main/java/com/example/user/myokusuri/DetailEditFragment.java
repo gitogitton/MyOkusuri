@@ -700,6 +700,7 @@ public class DetailEditFragment extends Fragment {
             if ( resultCode == Activity.RESULT_OK ) {
                 Log.d(CLASS_NAME, "result_OK" );
                 StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.setLength( 0 );
                 stringBuffer.append( date[0] );
                 stringBuffer.append( "/" );
                 stringBuffer.append( date[1] );
@@ -842,8 +843,9 @@ public class DetailEditFragment extends Fragment {
             FileOutputStream fileOutputStream = getContext().openFileOutput( createdFile, Context.MODE_PRIVATE );
             i=0;
             for ( ShohousenData shohousenData : mShohousenList ) {
-                StringBuffer stringBuffer = new StringBuffer();
                 String strSep = ",";
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.setLength( 0 );
                 stringBuffer.append( shohousenData.getShohouDate() ); //日付
                 stringBuffer.append( strSep );
                 stringBuffer.append( shohousenData.getNo() ); //No

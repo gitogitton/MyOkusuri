@@ -1,5 +1,6 @@
 package com.example.user.myokusuri;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.Calendar;
 
 public class CalenderFragment extends Fragment {
@@ -286,7 +288,7 @@ public class CalenderFragment extends Fragment {
 //                TextView textView = (TextView) tableRow.getChildAt(0 );
 //            }
 //        }
-
+        StringBuffer stringBuffer = new StringBuffer();
         int date = 1;
         for ( int i=0; i<tableRowCount; i++ ) {
             Log.d( CLASS_NAME, "i/date/lastDate="+i+"/"+date+"/"+lastDate );
@@ -300,6 +302,15 @@ public class CalenderFragment extends Fragment {
                 }
                 else {
                     if ( date<=lastDate ) { //月の最大日付を越えない場合はテキストセット。越えればnullクリア。
+                        stringBuffer.setLength( 0 );
+                        stringBuffer.append( year );
+                        stringBuffer.append( month );
+                        stringBuffer.append( date );
+                        stringBuffer.append( ".csv" );
+                        String fileName = stringBuffer.toString();
+                        if ( isShohouExist( fileName ) ) {
+                            textView.setBackgroundColor(Color.BLUE );
+                        }
                         textView.setText( String.valueOf( date ) );
                         Log.d( CLASS_NAME, "date="+date );
                         date ++;
@@ -318,6 +329,16 @@ public class CalenderFragment extends Fragment {
                 }
             }//for (j)
         }//for (i)
+    }
+
+    private boolean isShohouExist( String fileName ) {
+        Log.d( CLASS_NAME, "isShohouExist() start. [fileName : "+fileName+" ]" );
+        fileName = getContext().getFilesDir() + "/" + fileName;
+        Log.d( CLASS_NAME, "absolute name : "+fileName+" ]" );
+        File file = new File( fileName );
+        if ( file == null ) { return false; }
+        if ( !file.exists() ) { return false; }
+        return true;
     }
 
     @Override
