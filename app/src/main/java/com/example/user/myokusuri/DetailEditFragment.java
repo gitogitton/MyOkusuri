@@ -1,9 +1,9 @@
 package com.example.user.myokusuri;
 
-
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -38,13 +38,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link DetailEditFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class DetailEditFragment extends Fragment {
 
     private final String CLASS_NAME = getClass().getSimpleName();
@@ -61,6 +54,8 @@ public class DetailEditFragment extends Fragment {
     private View mView;
     private String mDate;
     private String mRestoreFromFileName = "";
+
+    private final int DIALOG_TYPE_SHOHOU_COPY = 1;
 
     public DetailEditFragment() {
         // Required empty public constructor
@@ -680,11 +675,49 @@ public class DetailEditFragment extends Fragment {
     private void copyShohou() {
         Log.d( CLASS_NAME, "copyShohou() start." );
 
+        //ダイアログで初期表示する日付を渡す
+        String[] date = mDate.split( "/" );
+        Bundle argDate = new Bundle();
+        argDate.putString( "ARG_YEAR", date[0] );
+        argDate.putString( "ARG_MONTH", date[1] );
+        argDate.putString( "ARG_DATE", date[2] );
+        Log.d( CLASS_NAME, "arg to dialog : year/mont/day = " + date[0] + "/" + date[1] + "/" + date[2] );
         //日付選択
         DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
+        datePickerDialogFragment.setTargetFragment( this, DIALOG_TYPE_SHOHOU_COPY ); //これを呼んでおくと onActivityResult() でDialogの返値が受けやすい。requestCode でどこから返ってきたかわかる。
+        datePickerDialogFragment.setArguments( argDate ); //初期日付を指定してダイアログを開く
         datePickerDialogFragment.show( getActivity().getSupportFragmentManager(), "datePickerDialogFragment" );
 
         return;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d( CLASS_NAME, "onActivityResult() start. [reqCode/resultCode : " + requestCode + "/" + resultCode + "]" );
+        if ( requestCode==DIALOG_TYPE_SHOHOU_COPY) {
+            int[] date = data.getIntArrayExtra("SET_DATE");
+            Log.d(CLASS_NAME, "year/month/date : " + date[0] + "/" + date[1] + "/" + date[2]);
+            if ( resultCode == Activity.RESULT_OK ) {
+                Log.d(CLASS_NAME, "result_OK" );
+                StringBuffer stringBuffer = new StringBuffer();
+                stringBuffer.append( date[0] );
+                stringBuffer.append( "/" );
+                stringBuffer.append( date[1] );
+                stringBuffer.append( "/" );
+                stringBuffer.append( date[2] );
+                //日付設定
+                mDate = stringBuffer.toString();
+                TextView textView = getActivity().findViewById(R.id.select_date);
+                textView.setText(mDate);
+                for ( int i=0; i<mShohousenList.size(); i++ ) {
+                    mShohousenList.get(i).setShohouDate( mDate );
+                }
+                return;
+            }
+            else {
+                Log.d(CLASS_NAME, "Not result_OK" );
+            }
+        }
     }
 
     private void removeShohou() {
