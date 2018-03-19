@@ -23,14 +23,12 @@
                 android:orderInCategory="300"
                 app:showAsAction="never"
                 />
-<!--
             <item
                 android:id="@+id/menu02_shohou_copy"
                 android:title="@string/menu02_shohou_copy"
                 android:orderInCategory="400"
                 app:showAsAction="never"
                     />
--->
             <item
                 android:id="@+id/menu02_shohou_save"
                 android:title="@string/menu02_shohou_save"

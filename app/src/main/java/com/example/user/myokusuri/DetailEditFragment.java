@@ -627,7 +627,7 @@ public class DetailEditFragment extends Fragment {
             case R.id.menu01_shohou :
             case R.id.menu02_shohou_add :
             case R.id.menu02_shohou_del :
-//            case R.id.menu02_shohou_copy :
+            case R.id.menu02_shohou_copy :
             case R.id.menu02_shohou_save :
                 selectShohouMenu( item );
                 break;
@@ -662,9 +662,10 @@ public class DetailEditFragment extends Fragment {
                 Log.d( CLASS_NAME, "処方箋［削除］ メニュー選択" );
                 removeShohou();
                 break;
-//            case R.id.menu02_shohou_copy :
-//                Log.d( CLASS_NAME, "処方箋［コピー］ メニュー選択" );
-//                break;
+            case R.id.menu02_shohou_copy :
+                Log.d( CLASS_NAME, "処方箋［コピー］ メニュー選択" );
+                copyShohou();
+                break;
             case R.id.menu02_shohou_save :
                 Log.d( CLASS_NAME, "処方箋［保存ー］ メニュー選択" );
                 storeShohouWithCheck();
@@ -674,6 +675,16 @@ public class DetailEditFragment extends Fragment {
             default:
                 break;
         }
+    }
+
+    private void copyShohou() {
+        Log.d( CLASS_NAME, "copyShohou() start." );
+
+        //日付選択
+        DatePickerDialogFragment datePickerDialogFragment = new DatePickerDialogFragment();
+        datePickerDialogFragment.show( getActivity().getSupportFragmentManager(), "datePickerDialogFragment" );
+
+        return;
     }
 
     private void removeShohou() {
