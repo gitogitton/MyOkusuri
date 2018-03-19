@@ -723,6 +723,9 @@ public class DetailEditFragment extends Fragment {
 
     private void removeShohou() {
         Log.d( CLASS_NAME, "removeShohou() start." );
+        if ( mShohousenList.size() <= 0 ) {
+            return;
+        }
         //表示中の処方は？
         int currentPage = getCurrentShohouPageNo();
         int removeIndex = currentPage - 1; //配列に使うので。
