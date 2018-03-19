@@ -42,7 +42,7 @@
     <ScrollView
         android:id="@+id/scroll_shohousen"
         android:layout_width="match_parent"
-        android:layout_height="400sp"
+        android:layout_height="450sp"
         android:layout_below="@id/button_prevShohou"
         android:fadeScrollbars="false"
         >
