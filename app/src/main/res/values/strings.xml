@@ -1,6 +1,6 @@
 <resources>
 <!--画面名称-->
-    <string name="app_name">お薬(main)</string>
+    <string name="app_name">お薬メモ</string>
     <string name="title_calender">カレンダーから編集</string>
     <string name="title_edit">詳細編集</string>
 <!--メイン画面-->
