@@ -80,7 +80,6 @@ public class MenuFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.d( CLASS_NAME, "onViewCreate() run." );
         Button buttonCalender = getActivity().findViewById( R.id.buttonToCalender );
-        Button buttonOkusuriItiran = getActivity().findViewById( R.id.buttonToOkusuriItiran );
         //カレンダーボタンのリスナー
         buttonCalender.setOnClickListener( new View.OnClickListener() {
             @Override
@@ -88,17 +87,6 @@ public class MenuFragment extends Fragment {
                 Log.d( CLASS_NAME, "mButtonCalender listener run." );
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace( R.id.container, CalenderFragment.newInstance( "", "" ) );
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        });
-        //薬一覧ボタンのリスナー
-        buttonOkusuriItiran.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d( CLASS_NAME, "mButtonOkusuriItiran listener run." );
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace( R.id.container, OkusuriItiranFragment.newInstance( "", "" ) );
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
