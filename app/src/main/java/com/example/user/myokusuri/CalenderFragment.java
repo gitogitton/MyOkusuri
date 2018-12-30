@@ -297,6 +297,7 @@ public class CalenderFragment extends Fragment {
             textViewCount = tableRow.getChildCount();
             for ( int j=0; tableRow!=null && j<textViewCount; j++ ) {
                 TextView textView = (TextView)tableRow.getChildAt( j );
+                // 水色（#afeeee）／薄い黄色（#ffffe0）
                 int backgroudColor = (j % 2 == 0) ? Color.parseColor( "#afeeee" ):Color.parseColor( "#ffffe0" );
                 int textColor;
                 switch ( j % 7 ) {
@@ -312,6 +313,7 @@ public class CalenderFragment extends Fragment {
                 }
                 if ( i==0 && (j+1)<dayOfTheWeek ) { //月の最初の週、且つ、開始曜日でない場合はnullクリア。
                     textView.setText( R.string.calender_date_none );
+                    textView.setBackgroundColor( backgroudColor );  // 2018.12.30 処方データがある日の色が残ってしまう不具合に対応
                 }
                 else {
                     if ( date<=lastDate ) { //月の最大日付を越えない場合はテキストセット。越えればnullクリア。
@@ -341,6 +343,7 @@ public class CalenderFragment extends Fragment {
                         }
                         else {
                             textView.setText(R.string.calender_date_none);
+                            textView.setBackgroundColor( backgroudColor );  // 2018.12.30 処方データがある日の色が残ってしまう不具合に対応
                             Log.d(CLASS_NAME, "date is none");
                         }
                     }
