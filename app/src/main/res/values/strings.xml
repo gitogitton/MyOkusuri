@@ -5,7 +5,7 @@
     <string name="title_edit">詳細編集</string>
 <!--メイン画面-->
     <string name="button_calender">カレンダーから編集</string>
-    <string name="kusuri_itiran">服用中薬一覧</string>
+    <string name="medication_list">服薬中一覧</string>
 <!--カレンダー画面-->
     <string name="menu_calender_01">メニュー１</string>
     <string name="hello_calender_fragment">Hello Calender fragment</string>

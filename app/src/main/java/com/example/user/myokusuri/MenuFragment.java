@@ -79,16 +79,30 @@ public class MenuFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.d( CLASS_NAME, "onViewCreate() run." );
-        Button buttonCalender = getActivity().findViewById( R.id.buttonToCalender );
         //カレンダーボタンのリスナー
+        Button buttonCalender = getActivity().findViewById( R.id.buttonToCalender );
         buttonCalender.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d( CLASS_NAME, "mButtonCalender listener run." );
+                //Log.d( CLASS_NAME, "buttonCalender listener run." );
                 FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace( R.id.container, CalenderFragment.newInstance( "", "" ) );
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+            }
+        });
+        //服薬中一覧ボタンのリスナー
+        Button buttonMedication = getActivity().findViewById( R.id.buttonMedicationList );
+        buttonMedication.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d( CLASS_NAME, "buttonMedication listener run." );
+                //
+                //＜スペック＞
+                //・当日から８週分表示
+                //・表示するデータは薬局、処方日数、処方薬
+                //・処方日から処方日数を過ぎている薬には印を付ける。
+                //
             }
         });
         super.onViewCreated(view, savedInstanceState);
