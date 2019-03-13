@@ -9,20 +9,24 @@
         android:id="@+id/buttonToCalender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="87dp"
         android:height="100sp"
         android:text="@string/button_calender"
-        android:textSize="30sp"
-        />
+        android:textSize="30sp" />
 
     <Button
-        android:id="@+id/buttonToOkusuriItiran"
+        android:id="@+id/buttonMedicationList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonToCalender"
-        android:layout_marginTop="50sp"
-        android:text="@string/kusuri_itiran"
-        android:textSize="30sp"
-        />
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/buttonToCalender"
+        android:layout_marginTop="40dp"
+        android:layout_alignStart="@+id/buttonToCalender"
+        android:layout_alignEnd="@+id/buttonToCalender"
+        android:height="100sp"
+        android:text="@string/medication_list"
+        android:textSize="30sp" />
 
 </RelativeLayout>
